@@ -23,7 +23,7 @@ class LoginController extends AbstractController
             ],Response::HTTP_UNAUTHORIZED);
         }
 
-        $token = "test";
+        $token = "";
         return $this->json([
             'user' => $user->getUserIdentifier(),
             'token' => $token,
