@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Services\AuthenticationService;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,17 +21,20 @@ class LoginController extends AbstractController
 
     }
 
-    #[Route('/login', name: 'app_login', methods: ["POST"])]
-    public function login(Request $request): JsonResponse
+    #[Route('/login', name: 'login', methods: ["POST"])]
+    public function login(#[CurrentUser] ?User $user): Response
     {
-        $payload = json_decode($request->getContent(),true);
-        $email = $payload["email"];
-        $password = $payload["password"];
-        if(!empty($email) && !empty($password)){
-           $result = $this->authenticationService->login($email, $password);
-           return $this->json($result, 200);
+        if ($user == null) {
+            return $this->json([
+                'message'=>'no user found'
+            ],Response::HTTP_UNAUTHORIZED);
+
         }
-        return $this->json(["error"=>"error on authentication"],403);
+        $token = "test";
+        return $this->json([
+            'user' => $user->getUserIdentifier(),
+            'token' => $token,
+        ]);
     }
 
 }
