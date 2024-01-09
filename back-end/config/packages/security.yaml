@@ -21,10 +21,10 @@ security:
                     check_path: login
                     success_handler: lexik_jwt_authentication.handler.authentication_success
                     failure_handler: lexik_jwt_authentication.handler.authentication_failure
-        api:
-            pattern:   ^/api
-            stateless: true
-            jwt: ~
+            api:
+                pattern:   ^/api
+                stateless: true
+                jwt: ~
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -37,6 +37,8 @@ security:
     access_control:
         - { path: ^/login,roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/driver, roles: [IS_AUTHENTICATED_FULLY, USER_DRIVER] }
+        - { path: ^/api/client, roles: [IS_AUTHENTICATED_FULLY, USER_CLIENT] }
 
 when@test:
     security:
