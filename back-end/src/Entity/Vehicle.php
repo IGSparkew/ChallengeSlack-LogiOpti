@@ -28,6 +28,9 @@ class Vehicle
     #[ORM\OneToMany(mappedBy: 'vehicle', targetEntity: Delivery::class)]
     private Collection $deliveries;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $average_comsumption = null;
+
     public function __construct()
     {
         $this->deliveries = new ArrayCollection();
@@ -100,6 +103,18 @@ class Vehicle
                 $delivery->setVehicle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAverageComsumption(): ?string
+    {
+        return $this->average_comsumption;
+    }
+
+    public function setAverageComsumption(?string $average_comsumption): static
+    {
+        $this->average_comsumption = $average_comsumption;
 
         return $this;
     }
