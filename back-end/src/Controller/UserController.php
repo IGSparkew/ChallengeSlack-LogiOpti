@@ -16,20 +16,10 @@ class UserController extends AbstractController
     #[Route('/api/user/role', name: 'app_role', methods: ["GET"])]
     public function getRole(#[CurrentUser] ?User $user): Response
     {
-        //if($user == null){
-        //    return $this->json(["message"=>"User not found"], Response::HTTP_UNAUTHORIZED);
-        //}
-        $token = $this->tokenStorage->getToken();
-        if(empty($token)) {
-            return $this->json(["message"=>"Token not found"], Response::HTTP_UNAUTHORIZED);
-        }
-        
-        $user = $token->getUser();
-
-        if (empty($user)) {
+        if($user == null){
             return $this->json(["message"=>"User not found"], Response::HTTP_UNAUTHORIZED);
         }
-        return $this->json(["role"=>$user->getRoles()]);
 
+        return $this->json(["role"=>$user->getRoles()]);
     }
 }
