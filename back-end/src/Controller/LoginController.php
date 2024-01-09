@@ -14,13 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class LoginController extends AbstractController
 {
-
-    public function __construct(
-        private AuthenticationService $authenticationService
-    ){
-
-    }
-
     #[Route('/login', name: 'login', methods: ["POST"])]
     public function login(#[CurrentUser] ?User $user): Response
     {
