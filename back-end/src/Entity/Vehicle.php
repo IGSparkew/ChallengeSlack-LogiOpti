@@ -22,7 +22,7 @@ class Vehicle
     #[ORM\Column(nullable: true)]
     private ?int $max_load = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 10, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $kilometer_cost = null;
 
     #[ORM\OneToMany(mappedBy: 'vehicle', targetEntity: Delivery::class)]
