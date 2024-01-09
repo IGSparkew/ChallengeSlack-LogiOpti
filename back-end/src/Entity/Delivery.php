@@ -15,10 +15,10 @@ class Delivery
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $start_date = null;
+    private ?\DateTime $start_date = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $end_date = null;
+    private ?\DateTime $end_date = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 10, nullable: true)]
     private ?string $toll_cost = null;
@@ -39,7 +39,7 @@ class Delivery
     private ?string $distance = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $time = null;
+    private ?\DateTime $time = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $payload = null;
@@ -54,29 +54,32 @@ class Delivery
     #[ORM\JoinColumn(nullable: false)]
     private ?Vehicle $vehicle = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $working_time_cost = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function getStartDate(): ?\DateTime
     {
         return $this->start_date;
     }
 
-    public function setStartDate(\DateTimeInterface $start_date): static
+    public function setStartDate(\DateTime $start_date): static
     {
         $this->start_date = $start_date;
 
         return $this;
     }
 
-    public function getEndDate(): ?\DateTimeInterface
+    public function getEndDate(): ?\DateTime
     {
         return $this->end_date;
     }
 
-    public function setEndDate(?\DateTimeInterface $end_date): static
+    public function setEndDate(?\DateTime $end_date): static
     {
         $this->end_date = $end_date;
 
@@ -155,12 +158,12 @@ class Delivery
         return $this;
     }
 
-    public function getTime(): ?\DateTimeInterface
+    public function getTime(): ?\DateTime
     {
         return $this->time;
     }
 
-    public function setTime(?\DateTimeInterface $time): static
+    public function setTime(?\DateTime $time): static
     {
         $this->time = $time;
 
@@ -211,6 +214,18 @@ class Delivery
     public function setVehicle(?Vehicle $vehicle): static
     {
         $this->vehicle = $vehicle;
+
+        return $this;
+    }
+
+    public function getWorkingTimeCost(): ?string
+    {
+        return $this->working_time_cost;
+    }
+
+    public function setWorkingTimeCost(?string $working_time_cost): static
+    {
+        $this->working_time_cost = $working_time_cost;
 
         return $this;
     }
