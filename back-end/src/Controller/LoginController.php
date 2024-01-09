@@ -21,8 +21,8 @@ class LoginController extends AbstractController
             return $this->json([
                 'message'=>'no user found'
             ],Response::HTTP_UNAUTHORIZED);
-
         }
+
         $token = "test";
         return $this->json([
             'user' => $user->getUserIdentifier(),
