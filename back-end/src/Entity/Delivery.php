@@ -20,7 +20,7 @@ class Delivery
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $end_date = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 10, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $toll_cost = null;
 
     #[ORM\Column(length: 255)]
@@ -29,13 +29,13 @@ class Delivery
     #[ORM\Column(length: 255)]
     private ?string $end_location = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 10, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $energy_cost = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 10, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $using_cost = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 10, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $distance = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
