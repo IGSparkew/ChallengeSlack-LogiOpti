@@ -11,35 +11,49 @@ export default function Login() {
             const password = formData.get("password");
             if (email && password) {
                 const user = createUser(email, password);
-                const res = await getUser(user);
-                console.log(res);
+                const res = await login(user);
+                if (res != null && res.token != null) {
+                    localStorage.setItem("token", res.token);
+                    const role = getRole(res.token);
+                    
+                }
             }
         }
     }
 
-    async function getUser(user) {  
-        if (user != null && user.email != null && user.password != null) {
+    async function login(user) {  
+        if (user != null && user.username != null && user.password != null) {
             const res = await fetch("http://localhost:8000/login", {
                     method: "POST",
-                    mode: "cors",
                     cache: "no-cache",
-                    credentials: "same-origin",
                     headers: {
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "http://localhost:8000",
-                        "Access-Control-Allow-Credentials": "true"
-                        
+                        "Content-Type": "application/json",                        
                     },
                     body: JSON.stringify(user)
                 });
-            return res;
+            return  res.json();
+        } 
+    }
+
+    async function getRole(token) {  
+        if (token != null) {
+            const bearerToken =  "Bearer " + token;
+            const res = await fetch("http://localhost:8000/api/user/role", {
+                    method: "GET",
+                    cache: "no-cache",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": bearerToken                
+                    },
+                });
+            return  res.json();
         } 
     }
 
 
     function createUser(email, password) {
         return {
-            "email": email,
+            "username": email,
             "password": password
         }
     }
