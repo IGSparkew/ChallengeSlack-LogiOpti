@@ -1,5 +1,4 @@
 'use client';
-import Image from 'next/image'
 
 export default function Login() {
 
@@ -18,17 +17,12 @@ export default function Login() {
     }
 
     async function getUser(user) {  
-        if (user != null && user.email != null && user.password != null) {
+        if (user != null && user.username != null && user.password != null) {
             const res = await fetch("http://localhost:8000/login", {
-                    method: "POST",
-                    mode: "cors",
-                    cache: "no-cache",
-                    credentials: "same-origin",
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "http://localhost:8000",
-                        "Access-Control-Allow-Credentials": "true"
-                        
+                        "Access-Control-Allow-Origin": "http://localhost:3000",
+                        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE"
                     },
                     body: JSON.stringify(user)
                 });
@@ -39,7 +33,7 @@ export default function Login() {
 
     function createUser(email, password) {
         return {
-            "email": email,
+            "username": email,
             "password": password
         }
     }
