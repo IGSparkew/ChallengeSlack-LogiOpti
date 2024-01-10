@@ -23,12 +23,6 @@ class Delivery
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $toll_cost = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $start_location = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $end_location = null;
-
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $energy_cost = null;
 
@@ -38,24 +32,23 @@ class Delivery
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $distance = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTime $time = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $payload = null;
-
     #[ORM\Column(length: 4000000000, nullable: true)]
     private ?string $array_coordinates = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $status = null;
-
-    #[ORM\ManyToOne(inversedBy: 'deliveries')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Vehicle $vehicle = null;
-
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $working_time_cost = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $Time = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $Status = null;
+
+    #[ORM\ManyToOne(inversedBy: 'deliveries')]
+    private ?Vehicle $vehicle = null;
+
+    #[ORM\ManyToOne(inversedBy: 'deliveries')]
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -98,30 +91,6 @@ class Delivery
         return $this;
     }
 
-    public function getStartLocation(): ?string
-    {
-        return $this->start_location;
-    }
-
-    public function setStartLocation(string $start_location): static
-    {
-        $this->start_location = $start_location;
-
-        return $this;
-    }
-
-    public function getEndLocation(): ?string
-    {
-        return $this->end_location;
-    }
-
-    public function setEndLocation(string $end_location): static
-    {
-        $this->end_location = $end_location;
-
-        return $this;
-    }
-
     public function getEnergyCost(): ?string
     {
         return $this->energy_cost;
@@ -158,30 +127,6 @@ class Delivery
         return $this;
     }
 
-    public function getTime(): ?\DateTime
-    {
-        return $this->time;
-    }
-
-    public function setTime(?\DateTime $time): static
-    {
-        $this->time = $time;
-
-        return $this;
-    }
-
-    public function getPayload(): ?string
-    {
-        return $this->payload;
-    }
-
-    public function setPayload(?string $payload): static
-    {
-        $this->payload = $payload;
-
-        return $this;
-    }
-
     public function getArrayCoordinates(): ?string
     {
         return $this->array_coordinates;
@@ -196,12 +141,36 @@ class Delivery
 
     public function getStatus(): ?string
     {
-        return $this->status;
+        return $this->Status;
     }
 
-    public function setStatus(?string $status): static
+    public function setStatus(?string $Status): static
     {
-        $this->status = $status;
+        $this->Status = $Status;
+
+        return $this;
+    }
+
+    public function getWorkingTimeCost(): ?string
+    {
+        return $this->working_time_cost;
+    }
+
+    public function setWorkingTimeCost(?string $working_time_cost): static
+    {
+        $this->working_time_cost = $working_time_cost;
+
+        return $this;
+    }
+
+    public function getTime(): ?int
+    {
+        return $this->Time;
+    }
+
+    public function setTime(?int $Time): static
+    {
+        $this->Time = $Time;
 
         return $this;
     }
@@ -218,14 +187,14 @@ class Delivery
         return $this;
     }
 
-    public function getWorkingTimeCost(): ?string
+    public function getUser(): ?User
     {
-        return $this->working_time_cost;
+        return $this->user;
     }
 
-    public function setWorkingTimeCost(?string $working_time_cost): static
+    public function setUser(?User $user): static
     {
-        $this->working_time_cost = $working_time_cost;
+        $this->user = $user;
 
         return $this;
     }
