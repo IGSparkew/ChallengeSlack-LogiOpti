@@ -10,25 +10,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class RegisterController extends AbstractController
+class UserManagerController extends AbstractController
 {
-    public function __construct(private UserPasswordHasherInterface $passwordHasher){
+    public function __construct(private UserPasswordHasherInterface $passwordHasher)
+    {
 
     }
-    #[Route('/api/admin/register', name: 'app_register', methods: ["POST"])]
+
+    #[Route('/api/admin/create', name: 'app_create', methods: ["POST"])]
     public function register(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
         $data = json_decode($request->getContent(), true);
-        if(!empty($data) &&
-            $data["email"]!=null &&
-            $data["lastName"]!=null &&
-            $data["firstName"]!=null &&
-            $data["password"]!=null &&
-            $data["salary"]!=null &&
+        if (!empty($data) &&
+            $data["lastName"] != null &&
+            $data["firstName"] != null &&
+            $data["password"] != null &&
+            $data["salary"] != null &&
             !empty($data["roles"])
-        )
-        {
+        ) {
             $user->setEmail($data["email"]);
             $plainPassword = $data["password"];
             $hashedPassword = $this->passwordHasher->hashPassword(
@@ -43,12 +43,12 @@ class RegisterController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             return $this->json([
-                'message'=>'L\'utilisateur a bien été enregistré dans la base de données'
-            ],Response::HTTP_CREATED);
+                'message' => 'L\'utilisateur a bien été enregistré dans la base de données'
+            ], Response::HTTP_CREATED);
         }
 
         return $this->json([
-            'message'=>'Le formulaire d\'inscription est incomplet ou contient des données invalides'
-        ],Response::HTTP_BAD_REQUEST);
+            'message' => 'Le formulaire d\'inscription est incomplet ou contient des données invalides'
+        ], Response::HTTP_BAD_REQUEST);
     }
 }
