@@ -23,7 +23,6 @@ security:
                     failure_handler: lexik_jwt_authentication.handler.authentication_failure
             logout:
                 path: /logout
-
         api:
             pattern:   ^/api
             jwt: ~
@@ -38,9 +37,11 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/login,roles: PUBLIC_ACCESS }
+        - { path: ^/api/admin, roles: [ IS_AUTHENTICATED_FULLY, USER_ADMIN ] }
+        - { path: ^/api/driver, roles: [ IS_AUTHENTICATED_FULLY, USER_DRIVER ] }
+        - { path: ^/api/client, roles: [ IS_AUTHENTICATED_FULLY, USER_CLIENT ] }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/api/driver, roles: [IS_AUTHENTICATED_FULLY, USER_DRIVER] }
-        - { path: ^/api/client, roles: [IS_AUTHENTICATED_FULLY, USER_CLIENT] }
+
 
 when@test:
     security:

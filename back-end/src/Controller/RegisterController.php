@@ -15,7 +15,7 @@ class RegisterController extends AbstractController
     public function __construct(private UserPasswordHasherInterface $passwordHasher){
 
     }
-    #[Route('/register', name: 'app_register')]
+    #[Route('/api/admin/register', name: 'app_register', methods: ["POST"])]
     public function register(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
