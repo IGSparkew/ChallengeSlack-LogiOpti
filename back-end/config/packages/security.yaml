@@ -16,13 +16,8 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            json_login:
-                    # app_login is a route we will create below
-                    check_path: login
-                    success_handler: lexik_jwt_authentication.handler.authentication_success
-                    failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
-            pattern:   ^/api
+            pattern: ^/api
             jwt: ~
 
             # activate different ways to authenticate
@@ -35,9 +30,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/login,roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/api/driver, roles: [IS_AUTHENTICATED_FULLY, USER_DRIVER] }
-        - { path: ^/api/client, roles: [IS_AUTHENTICATED_FULLY, USER_CLIENT] }
+        - { path: ^/api, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 when@test:
     security:
