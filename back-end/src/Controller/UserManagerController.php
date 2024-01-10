@@ -18,7 +18,7 @@ class UserManagerController extends AbstractController
     }
 
     #[Route('/api/admin/create', name: 'app_create', methods: ["POST"])]
-    public function register(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
         $data = json_decode($request->getContent(), true);
@@ -51,4 +51,20 @@ class UserManagerController extends AbstractController
             'message' => 'Le formulaire d\'inscription est incomplet ou contient des données invalides'
         ], Response::HTTP_BAD_REQUEST);
     }
+    #[Route('/api/admin/delete', name: 'app_delete', methods: ["DELETE"])]
+    public function delete(Request $request, EntityManagerInterface $entityManager, string $email): Response
+    {
+        $user = $entityManager->getRepository(User::class)->find($email);
+        if (!$user) {
+            throw $this->createNotFoundException(
+                'User not Found' .$user
+            );
+        }
+        $entityManager->remove($user);
+        $entityManager->flush();
+        return $this->json([
+            'message' => 'L\'utilisateur a bien été supprimé dans la base de données'
+        ], Response::HTTP_OK);
+    }
+
 }
