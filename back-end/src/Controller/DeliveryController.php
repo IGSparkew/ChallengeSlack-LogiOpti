@@ -124,13 +124,15 @@ class DeliveryController extends AbstractController
         $delivery->setStatus(self::UPCOMING);
         $delivery->setVehicle($vehicle);
         $delivery->setUser($user);
-        $entityManager->persist($delivery);
-
+        
         $deliveryAddress->setDelivery($delivery);
         $entityManager->persist($deliveryAddress);
+        $entityManager->persist($delivery);
+
+        
         
         $entityManager->flush();
-        return $this->json($delivery);
+        return $this->json($delivery->convertDeliveryEntityToJson($doctrine->getRepository(Delivery::class)->find($delivery->getId())));
     }
 }
 

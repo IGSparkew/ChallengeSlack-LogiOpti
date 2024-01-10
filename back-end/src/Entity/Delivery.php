@@ -198,4 +198,31 @@ class Delivery
 
         return $this;
     }
+
+    public function convertDeliveryEntityToJson(Delivery $delivery): array
+    {
+        $deliveryArray = [
+            'id' => $delivery->getId(),
+            'start_date' => $delivery->getStartDate(),
+            'end_date' => $delivery->getEndDate(),
+            'toll_cost' => $delivery->getTollCost(),
+            'energy_cost' => $delivery->getEnergyCost(),
+            'using_cost' => $delivery->getUsingCost(),
+            'distance' => $delivery->getDistance(),
+            'array_coordinates' => json_decode($delivery->getArrayCoordinates(), true),
+            'working_time_cost' => $delivery->getWorkingTimeCost(),
+            'Time' => $delivery->getTime(),
+            'Status' => $delivery->getStatus(),
+            'vehicle' => [
+                'id' => $delivery->getVehicle() ? $delivery->getVehicle()->getId() : null,
+                // Add other vehicle properties as needed
+            ],
+            'user' => [
+                'id' => $delivery->getUser() ? $delivery->getUser()->getId() : null,
+                // Add other user properties as needed
+            ],
+        ];
+
+        return $deliveryArray;
+    }
 }
