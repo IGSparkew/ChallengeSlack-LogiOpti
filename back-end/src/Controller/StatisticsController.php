@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Delivery;
 use App\Entity\VehicleType;
-use App\Repository\DeliveryRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -52,6 +51,7 @@ class StatisticsController extends AbstractController
                     // Ajout au cout usure total
                     $coutUsureTotal += $deliveryResult->getUsingCost();
                     $deliveryDTO = $deliveryResult->convertDeliveryEntityToArray($deliveryResult, $doctrine);
+                    $deliveryDTO["fuelVolume"] = $volumeEssenceVehicle;
                     array_push($deliveries, $deliveryDTO);
                 }
 
@@ -88,6 +88,8 @@ class StatisticsController extends AbstractController
                         $coutUsureTotal += $deliveryResult->getUsingCost();
 
                         $deliveryDTO = $deliveryResult->convertDeliveryEntityToArray($deliveryResult, $doctrine);
+                        // dd($deliveryDTO);
+                        $deliveryDTO["fuelVolume"] = $volumeEssenceVehicle;
                         array_push($deliveries, $deliveryDTO);
                     }
 
