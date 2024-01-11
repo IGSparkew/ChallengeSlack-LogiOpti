@@ -23,6 +23,7 @@ class UserManagerController extends AbstractController
         $user = new User();
         $data = json_decode($request->getContent(), true);
         if (!empty($data) &&
+            $data["email"] != null &&
             $data["lastName"] != null &&
             $data["firstName"] != null &&
             $data["password"] != null &&
@@ -43,28 +44,68 @@ class UserManagerController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             return $this->json([
-                'message' => 'L\'utilisateur a bien été enregistré dans la base de données'
+                'message' => 'User created'
             ], Response::HTTP_CREATED);
         }
 
         return $this->json([
-            'message' => 'Le formulaire d\'inscription est incomplet ou contient des données invalides'
+            'message' => 'The form is incomplete or invalid'
         ], Response::HTTP_BAD_REQUEST);
     }
-    #[Route('/api/admin/delete', name: 'app_delete', methods: ["DELETE"])]
-    public function delete(Request $request, EntityManagerInterface $entityManager, string $email): Response
+
+    #[Route('/api/admin/update', name: 'app_update', methods: ["PATCH"])]
+    public function update(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $user = $entityManager->getRepository(User::class)->find($email);
-        if (!$user) {
+        $data = json_decode($request->getContent(), true);
+
+        if (!empty($data) && $data["email"] != null) {
+            $user = $entityManager->getRepository(User::class)->findOneBy(array("email" => $data["email"]));
+            if ($user) {
+                if(isset($data["password"])){
+                    $plainPassword = $data["password"];
+                    $hashedPassword = $this->passwordHasher->hashPassword(
+                        $user,
+                        $plainPassword
+                    );
+                    $user->setPassword($hashedPassword);
+                }
+                if(isset($data["salary"])){
+                    $user->setSalary($data["salary"]);
+                }
+                $entityManager->flush();
+                return $this->json([
+                    'message' => 'User updated'
+                ], Response::HTTP_OK);
+            }
             throw $this->createNotFoundException(
-                'User not Found' .$user
+                'User not found' . $user
             );
         }
-        $entityManager->remove($user);
-        $entityManager->flush();
         return $this->json([
-            'message' => 'L\'utilisateur a bien été supprimé dans la base de données'
-        ], Response::HTTP_OK);
+            'message' => 'The form is incomplete or invalid'
+        ], Response::HTTP_BAD_REQUEST);
     }
 
+    #[Route('/api/admin/delete', name: 'app_delete', methods: ["DELETE"])]
+    public function delete(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!empty($data) && $data["email"] != null) {
+            $user = $entityManager->getRepository(User::class)->findOneBy(array("email" => $data["email"]));
+            if ($user) {
+                $entityManager->remove($user);
+                $entityManager->flush();
+                return $this->json([
+                    'message' => 'User deleted'
+                ], Response::HTTP_OK);
+            }
+            throw $this->createNotFoundException(
+                'User not found' . $user
+            );
+        }
+        return $this->json([
+            'message' => 'The form is incomplete or invalid'
+        ], Response::HTTP_BAD_REQUEST);
+    }
 }
