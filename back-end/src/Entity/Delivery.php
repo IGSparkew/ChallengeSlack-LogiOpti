@@ -39,7 +39,7 @@ class Delivery
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $distance = null;
-
+  
     #[ORM\Column(length: 4000000000, nullable: true)]
     private ?string $array_coordinates = null;
 
@@ -225,7 +225,7 @@ class Delivery
             'energy_cost' => $delivery->getEnergyCost(),
             'using_cost' => $delivery->getUsingCost(),
             'distance' => $delivery->getDistance(),
-            'array_coordinates' => json_decode($delivery->getArrayCoordinates(), true),
+            // 'array_coordinates' => json_decode($delivery->getArrayCoordinates(), true),
             'working_time_cost' => $delivery->getWorkingTimeCost(),
             'Time' => $delivery->getTime(),
             'Status' => self::Status[$status],
