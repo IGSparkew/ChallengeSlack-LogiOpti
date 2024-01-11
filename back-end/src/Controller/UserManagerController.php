@@ -23,7 +23,7 @@ class UserManagerController extends AbstractController
     #[Route('/api/admin/create', name: 'app_create', methods: ["POST"])]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
-        if(!$this->authentificationMiddleware->checkIfUserAdmin($request)){
+        if (!$this->authentificationMiddleware->checkIfUserAdmin($request)) {
             return $this->json([
                 'message' => 'You are not authentified or doesn\'t have the right to access this page'
             ], Response::HTTP_UNAUTHORIZED);
@@ -64,7 +64,7 @@ class UserManagerController extends AbstractController
     #[Route('/api/admin/update/{id}', name: 'app_update', methods: ["PATCH"])]
     public function update(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
-        if(!$this->authentificationMiddleware->checkIfUserAdmin($request)){
+        if (!$this->authentificationMiddleware->checkIfUserAdmin($request)) {
             return $this->json([
                 'message' => 'You are not authentified or doesn\'t have the right to access this page'
             ], Response::HTTP_UNAUTHORIZED);
@@ -74,7 +74,7 @@ class UserManagerController extends AbstractController
         if (!empty($id) && !empty($data)) {
             $user = $entityManager->getRepository(User::class)->find($id);
             if ($user) {
-                if(isset($data["password"])){
+                if (isset($data["password"])) {
                     $plainPassword = $data["password"];
                     $hashedPassword = $this->passwordHasher->hashPassword(
                         $user,
@@ -82,10 +82,10 @@ class UserManagerController extends AbstractController
                     );
                     $user->setPassword($hashedPassword);
                 }
-                if(isset($data["salary"])){
+                if (isset($data["salary"])) {
                     $user->setSalary($data["salary"]);
                 }
-                if(isset($data["vehicle_id"])){
+                if (isset($data["vehicle_id"])) {
                     $vehicle = $entityManager->getRepository(Vehicle::class)->find($id);
                     $user->addVehicle($vehicle);
                 }
@@ -107,7 +107,7 @@ class UserManagerController extends AbstractController
     public function delete(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
 
-        if(!$this->authentificationMiddleware->checkIfUserAdmin($request)){
+        if (!$this->authentificationMiddleware->checkIfUserAdmin($request)) {
             return $this->json([
                 'message' => 'You are not authentified or doesn\'t have the right to access this page'
             ], Response::HTTP_UNAUTHORIZED);
@@ -132,11 +132,12 @@ class UserManagerController extends AbstractController
             'message' => 'The form is incomplete or invalid'
         ], Response::HTTP_BAD_REQUEST);
     }
+
     #[Route('/api/admin/get/{id}', name: 'app_get', methods: ["GET"])]
     public function get(Request $request, EntityManagerInterface $entityManager, int $id): jsonResponse
     {
 
-        if(!$this->authentificationMiddleware->verify($request)){
+        if (!$this->authentificationMiddleware->verify($request)) {
             return $this->json([
                 'message' => 'You are not authentified or doesn\'t have the right to access this page'
             ], Response::HTTP_UNAUTHORIZED);
@@ -153,6 +154,6 @@ class UserManagerController extends AbstractController
                 'User not found' . $user
             );
         }
-        return $this->json(['message'=>"Missing Id"], 500);
+        return $this->json(['message' => "Missing Id"], 500);
     }
 }
