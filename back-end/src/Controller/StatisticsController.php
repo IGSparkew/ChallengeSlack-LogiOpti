@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Delivery;
+use App\Entity\VehicleType;
 use App\Repository\DeliveryRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -65,36 +66,43 @@ class StatisticsController extends AbstractController
 
                 return new JsonResponse([$result], 200);
                 break;
+
             case "truck":
-                $deliveryRepository = $this->entityManager->getRepository(Delivery::class);
-                $deliveriesResult = $deliveryRepository->findBetweenDateAndTruckType($startDate, $endDate, $truckType);
 
-                foreach ($deliveriesResult as $deliveryResult) {
+                $truckTypeToCheck = $doctrine->getRepository(VehicleType::class)->findOneBy(['type' => $truckType]);
+                if ($truckTypeToCheck == null) {
+                    return new JsonResponse(['message' => 'Le type de camion selectionné n\'existe pas'], 400);
+                } else {
+                    $deliveryRepository = $this->entityManager->getRepository(Delivery::class);
+                    $deliveriesResult = $deliveryRepository->findBetweenDateAndTruckType($startDate, $endDate, $truckType);
 
-                    $prixEssenceVehicle = $deliveryResult->getEnergyCost();
-                    // Ajout au cout essence total
-                    $prixEssenceTotal += $prixEssenceVehicle;
-                    $volumeEssenceVehicle = $prixEssenceVehicle / $this->prixEssence;
-                    // Ajout au volume essence total
-                    $volumeEssenceTotal += $volumeEssenceVehicle;
-                    // Ajout au cout usure total
-                    $coutUsureTotal += $deliveryResult->getUsingCost();
+                    foreach ($deliveriesResult as $deliveryResult) {
 
-                    $deliveryDTO = $deliveryResult->convertDeliveryEntityToArray($deliveryResult, $doctrine);
-                    array_push($deliveries, $deliveryDTO);
+                        $prixEssenceVehicle = $deliveryResult->getEnergyCost();
+                        // Ajout au cout essence total
+                        $prixEssenceTotal += $prixEssenceVehicle;
+                        $volumeEssenceVehicle = $prixEssenceVehicle / $this->prixEssence;
+                        // Ajout au volume essence total
+                        $volumeEssenceTotal += $volumeEssenceVehicle;
+                        // Ajout au cout usure total
+                        $coutUsureTotal += $deliveryResult->getUsingCost();
+
+                        $deliveryDTO = $deliveryResult->convertDeliveryEntityToArray($deliveryResult, $doctrine);
+                        array_push($deliveries, $deliveryDTO);
+                    }
+
+                    $result = [
+                        "livraisons" => $deliveries,
+                        "cout_totaux" => [
+                            "cout_essence_total" => $prixEssenceTotal,
+                            "volume_essence_total" => $volumeEssenceTotal,
+                            "cout_usure_total" => $coutUsureTotal
+                        ]
+                    ];
+
+                    return new JsonResponse([$result], 200);
+                    break;
                 }
-
-                $result = [
-                    "livraisons" => $deliveries,
-                    "cout_totaux" => [
-                        "cout_essence_total" => $prixEssenceTotal,
-                        "volume_essence_total" => $volumeEssenceTotal,
-                        "cout_usure_total" => $coutUsureTotal
-                    ]
-                ];
-
-                return new JsonResponse([$result], 200);
-                break;
         }
     }
 
