@@ -25,7 +25,7 @@ class StatisticsController extends AbstractController
     }
 
     #[Route('/getDaylyToTal/{year}-{month}-{day}/{timeChoice}/{typeChoix}/{truckType?}', name: 'dayly_total_get', methods: ['get'])]
-    public function get(ManagerRegistry $doctrine, Request $request, $year, $month, $day, $timeChoice, $typeChoix, $truckType): JsonResponse
+    public function getDaylyStats(ManagerRegistry $doctrine, Request $request, $year, $month, $day, $timeChoice, $typeChoix, $truckType): JsonResponse
     {
         // $entityManager = $doctrine->getManager();
         $deliveries = [];
