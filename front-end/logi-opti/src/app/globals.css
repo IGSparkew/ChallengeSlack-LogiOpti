@@ -152,15 +152,16 @@
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 
+.bg-redFullClair2{
+  background-color: rgba(162, 71, 98, 0.26);
+}
+
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
-  }
-  .bg-redFullClair2{
-    background-color: rgba(162, 71, 98, 0.26);
   }
 }
 @media (prefers-color-scheme: dark) {
