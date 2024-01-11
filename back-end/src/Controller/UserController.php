@@ -4,14 +4,13 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class UserController extends AbstractController
 {
-    public function __construct(private TokenStorageInterface $tokenStorage) { }
+    public function __construct() { }
 
     #[Route('/api/user/role', name: 'app_role', methods: ["GET"])]
     public function getRole(#[CurrentUser] ?User $user): Response
