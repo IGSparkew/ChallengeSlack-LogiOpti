@@ -32,7 +32,22 @@ class DeliveryRepository extends ServiceEntityRepository
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
+    }
+
+    public function findBetweenDateAndTruckType($startDate, $endDate, $truckType): array
+    {
+        return $this->createQueryBuilder('d')
+            ->join('d.vehicle', 'v')
+            ->join('v.vehicleType', 'vt')
+            ->where('d.start_date BETWEEN :startDate AND :endDate')
+            ->orWhere('d.end_date BETWEEN :startDate AND :endDate')
+            ->andWhere('vt.type = :vehicleType')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('vehicleType', $truckType)
+            ->getQuery()
+            ->getResult();
     }
 
     //    public function findOneBySomeField($value): ?Delivery

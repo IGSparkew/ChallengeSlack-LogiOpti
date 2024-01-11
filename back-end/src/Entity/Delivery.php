@@ -225,7 +225,7 @@ class Delivery
             'energy_cost' => $delivery->getEnergyCost(),
             'using_cost' => $delivery->getUsingCost(),
             'distance' => $delivery->getDistance(),
-            'array_coordinates' => json_decode($delivery->getArrayCoordinates(), true),
+            // 'array_coordinates' => json_decode($delivery->getArrayCoordinates(), true),
             'working_time_cost' => $delivery->getWorkingTimeCost(),
             'Time' => $delivery->getTime(),
             'Status' => self::Status[$status],
