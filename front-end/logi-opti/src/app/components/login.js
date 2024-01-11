@@ -1,6 +1,9 @@
 'use client';
+import { ApiService } from "../services/apiService";
 
 export default function Login() {
+
+    const api = new ApiService();
 
     async function authSubmit(event) {
         event.preventDefault();
@@ -14,7 +17,6 @@ export default function Login() {
                 if (res != null && res.token != null) {
                     localStorage.setItem("token", res.token);
                     const role = getRole(res.token);
-                    
                 }
             }
         }
@@ -22,30 +24,13 @@ export default function Login() {
 
     async function login(user) {  
         if (user != null && user.username != null && user.password != null) {
-            const res = await fetch("http://localhost:8000/login", {
-                    method: "POST",
-                    cache: "no-cache",
-                    headers: {
-                        "Content-Type": "application/json",                        
-                    },
-                    body: JSON.stringify(user)
-                });
-            return  res.json();
+            return api.post('/login', user);
         } 
     }
 
     async function getRole(token) {  
         if (token != null) {
-            const bearerToken =  "Bearer " + token;
-            const res = await fetch("http://localhost:8000/api/user/role", {
-                    method: "GET",
-                    cache: "no-cache",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": bearerToken                
-                    },
-                });
-            return  res.json();
+          return api.get('/api/user/role', token);
         } 
     }
 
