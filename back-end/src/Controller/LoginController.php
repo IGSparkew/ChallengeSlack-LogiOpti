@@ -42,7 +42,7 @@ class LoginController extends AbstractController
         }
 
         if ($this->userPasswordHasherInterface->isPasswordValid($userFound, trim($password))) {
-            return $this->json($this->JWTManager->create($userFound));
+            return $this->json(["token" => $this->JWTManager->create($userFound)]);
         }
 
         return $this->json("password not correct",Response::HTTP_UNAUTHORIZED);
