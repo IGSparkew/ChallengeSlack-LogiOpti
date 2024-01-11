@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Persistence\ManagerRegistry;
 
+
 #[ORM\Entity(repositoryClass: DeliveryRepository::class)]
 class Delivery
 {
@@ -38,7 +39,7 @@ class Delivery
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $distance = null;
-
+d
     #[ORM\Column(length: 4000000000, nullable: true)]
     private ?string $array_coordinates = null;
 
@@ -97,7 +98,7 @@ class Delivery
 
         return $this;
     }
-
+  
     public function getEnergyCost(): ?string
     {
         return $this->energy_cost;
@@ -133,7 +134,7 @@ class Delivery
 
         return $this;
     }
-
+  
     public function getArrayCoordinates(): ?string
     {
         return $this->array_coordinates;
@@ -236,4 +237,5 @@ class Delivery
 
         return $deliveryArray;
     }
+
 }
