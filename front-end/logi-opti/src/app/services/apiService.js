@@ -13,9 +13,9 @@ export class ApiService {
         'Content-Type': 'application/json',
       }
 
-      Object.keys(queryParams).forEach(key =>
-        url.searchParams.append(key, queryParams[key])
-      );
+ //     Object.keys(queryParams).forEach(key =>
+ //     url.searchParams.append(key, queryParams[key])
+  //   );
 
 
       if (token && token != "") {
