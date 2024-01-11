@@ -48,7 +48,7 @@ class AuthentificationMiddleware {
         if ($isVerified) {
             $roles = $this->getRole($request);
             foreach($roles as $role) {
-                if ($role == $roleVerified) {
+                if ($role === $roleVerified) {
                     return true;
                 }
             }
