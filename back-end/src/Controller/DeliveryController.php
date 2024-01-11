@@ -34,12 +34,12 @@ class DeliveryController extends AbstractController
         $entityManager = $doctrine->getManager();
         $data = json_decode($request->getContent(), true);
         $vehicleType = $doctrine->getRepository(VehicleType::class)->find($data['id_vehicule']);
-        
+
         $vehicle = new Vehicle();
         $vehicle->setVehicleType($vehicleType);
         $vehicle->addUser($user);
         $entityManager->persist($vehicle);
-        
+
         $addressStart = new Address();
         $addressStart->setCountry($data['start_country']);
         $addressStart->setRegion($data['start_region']);
@@ -47,7 +47,7 @@ class DeliveryController extends AbstractController
         $addressStart->setStreet($data['start_street']);
         $addressStart->setPostalCode($data['start_postal_code']);
         $entityManager->persist($addressStart);
-        
+
         $addressEnd = new Address();
         $addressEnd->setCountry($data['end_country']);
         $addressEnd->setRegion($data['end_region']);
@@ -55,11 +55,11 @@ class DeliveryController extends AbstractController
         $addressEnd->setStreet($data['end_street']);
         $addressEnd->setPostalCode($data['end_postal_code']);
         $entityManager->persist($addressEnd);
-        
+
         $deliveryAddress = new DeliveryAddress();
         $deliveryAddress->setAddressEnd($addressEnd);
         $deliveryAddress->setAddressStart($addressStart);
-        
+
         $delivery = new Delivery();
         $dateDepart = new \DateTime($data['date_depart']);
         $delivery->setStartDate($dateDepart);
@@ -92,7 +92,7 @@ class DeliveryController extends AbstractController
             'options[routingMode]' => "MONETARY",
             'profile' => $vehicleType->getType(),
         ];
-        
+
         foreach ($params as $key => $value) {
             if (stristr($key, 'waypoints')) {
                 $urlDelivery .= 'waypoints=' . $value . '&';
@@ -101,7 +101,7 @@ class DeliveryController extends AbstractController
             }
         }
         $urlDelivery = substr($urlDelivery, 0, strlen($urlDelivery) - 1);
-        
+
         $ch = curl_init($urlDelivery);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['ApiKey: ' . $_ENV['APIKEY']]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -124,15 +124,18 @@ class DeliveryController extends AbstractController
         $delivery->setStatus(self::UPCOMING);
         $delivery->setVehicle($vehicle);
         $delivery->setUser($user);
-        
+
         $deliveryAddress->setDelivery($delivery);
         $entityManager->persist($deliveryAddress);
         $entityManager->persist($delivery);
 
-        
-        
         $entityManager->flush();
-        return $this->json($delivery->convertDeliveryEntityToJson($doctrine->getRepository(Delivery::class)->find($delivery->getId())));
+
+        if ($entityManager->contains($delivery) && $entityManager->contains($deliveryAddress) && $entityManager->contains($addressEnd) && $entityManager->contains($addressStart) && $entityManager->contains($vehicle)) {
+            return new JsonResponse(['message' => 'Le trajet a été enregistré !'], 200);
+        } else {
+            return new JsonResponse(['error' => 'Une erreur s\'est produite lors de l\'enregistrement en base de données.'], 500);
+        }
     }
 }
 
