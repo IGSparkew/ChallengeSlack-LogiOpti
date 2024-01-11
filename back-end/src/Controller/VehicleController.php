@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api/vehicle', name: 'api_vehicle')]
 class VehicleController extends AbstractController
 {
     public function __construct(private AuthentificationMiddleware $authentificationMiddleware)
