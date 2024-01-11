@@ -132,4 +132,28 @@ class UserManagerController extends AbstractController
             'message' => 'The form is incomplete or invalid'
         ], Response::HTTP_BAD_REQUEST);
     }
+
+    #[Route('/api/admin/get/{id}', name: 'app_get', methods: ["GET"])]
+    public function get(Request $request, EntityManagerInterface $entityManager, int $id): jsonResponse
+    {
+
+        if (!$this->authentificationMiddleware->verify($request)) {
+            return $this->json([
+                'message' => 'You are not authentified or doesn\'t have the right to access this page'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+        $data = json_decode($request->getContent(), true);
+
+        if (!empty($id)) {
+            $user = $entityManager->getRepository(User::class)->find($id);
+            if ($user) {
+                $userObject = new User();
+                return $this->json([$userObject->convertUserEntityToArray($user)]);
+            }
+            throw $this->createNotFoundException(
+                'User not found' . $user
+            );
+        }
+        return $this->json(['message' => "Missing Id"], 500);
+    }
 }
