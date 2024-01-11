@@ -101,4 +101,15 @@ class Vehicle
 
         return $this;
     }
+
+    public function convertVehicleEntityToArray(Vehicle $vehicle): array
+    {
+        $vehicleType = new VehicleType();
+        $vehicleArray = [
+            'id' => $vehicle->getId(),
+            'vehicleType' => $vehicle->getVehicleType() ? $vehicleType->convertVehicleTypeEntityToArray($vehicle->getVehicleType()) : null,
+        ];
+
+        return $vehicleArray;
+    }
 }

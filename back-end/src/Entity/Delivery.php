@@ -5,10 +5,17 @@ namespace App\Entity;
 use App\Repository\DeliveryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Persistence\ManagerRegistry;
 
 #[ORM\Entity(repositoryClass: DeliveryRepository::class)]
 class Delivery
 {
+    const Status = [
+        0 => 'Upcoming',
+        1 => 'Pending',
+        2 => 'Finished'
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -199,8 +206,16 @@ class Delivery
         return $this;
     }
 
-    public function convertDeliveryEntityToJson(Delivery $delivery): array
+    public function convertDeliveryEntityToArray(Delivery $delivery, ManagerRegistry $doctrine): array
     {
+        $vehicle = new Vehicle();
+        $user = new User();
+        $deliveryAddress = $doctrine->getRepository(DeliveryAddress::class)->find($delivery->getId());
+        $address = new Address();
+        $status = $delivery->getStatus();
+        if ($delivery->getStartDate()->format('Y-m-d') > date('Y-m-d') && $status == 0) {
+            $status = 1;
+        }
         $deliveryArray = [
             'id' => $delivery->getId(),
             'start_date' => $delivery->getStartDate(),
@@ -212,15 +227,11 @@ class Delivery
             'array_coordinates' => json_decode($delivery->getArrayCoordinates(), true),
             'working_time_cost' => $delivery->getWorkingTimeCost(),
             'Time' => $delivery->getTime(),
-            'Status' => $delivery->getStatus(),
-            'vehicle' => [
-                'id' => $delivery->getVehicle() ? $delivery->getVehicle()->getId() : null,
-                // Add other vehicle properties as needed
-            ],
-            'user' => [
-                'id' => $delivery->getUser() ? $delivery->getUser()->getId() : null,
-                // Add other user properties as needed
-            ],
+            'Status' => self::Status[$status],
+            'startAddress' => $address->convertAddressEntityToArray($deliveryAddress->getAddressStart()),
+            'endAddress' => $address->convertAddressEntityToArray($deliveryAddress->getaddressEnd()),
+            'vehicle' => $delivery->getVehicle() ? $vehicle->convertVehicleEntityToArray($delivery->getVehicle()) : null,
+            'user' => $delivery->getUser() ? $user->convertUserEntityToArray($delivery->getUser()) : null,
         ];
 
         return $deliveryArray;

@@ -166,4 +166,18 @@ class Address
 
         return $this;
     }
+
+    public function convertAddressEntityToArray(Address $address): array
+    {
+        $addressArray = [
+            'id' => $address->getId(),
+            'country' => $address->getCountry(),
+            'region' => $address->getRegion(),
+            'city' => $address->getCity(),
+            'street' => $address->getStreet(),
+            'postalCode' => $address->getPostalCode()
+        ];
+
+        return $addressArray;
+    }
 }

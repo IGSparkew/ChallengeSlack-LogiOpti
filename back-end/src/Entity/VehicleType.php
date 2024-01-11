@@ -103,4 +103,16 @@ class VehicleType
 
         return $this;
     }
+
+    public function convertVehicleTypeEntityToArray(VehicleType $vehicleType): array
+    {
+        $vehicleArray = [
+            'id' => $vehicleType->getId(),
+            'type' => $vehicleType->getType(),
+            'averageComsumption' => $vehicleType->getAverageComsumption(),
+            'kilometerCost' => $vehicleType->getKilometerCost()
+        ];
+
+        return $vehicleArray;
+    }
 }

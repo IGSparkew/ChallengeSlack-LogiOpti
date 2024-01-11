@@ -216,4 +216,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function convertUserEntityToArray(User $user): array
+    {
+        $userArray = [
+            'id' => $user->getId(),
+            'lastname' => $user->getLastName(),
+            'firstname' => $user->getFirstName(),
+            'salary' => $user->getSalary()
+        ];
+
+        return $userArray;
+    }
 }
