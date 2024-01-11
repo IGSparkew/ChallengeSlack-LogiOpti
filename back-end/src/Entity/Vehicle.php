@@ -22,6 +22,7 @@ class Vehicle
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'vehicles')]
     private Collection $user;
 
+
     #[ORM\OneToMany(mappedBy: 'vehicle', targetEntity: Delivery::class)]
     private Collection $deliveries;
 
@@ -44,7 +45,6 @@ class Vehicle
     public function setVehicleType(?VehicleType $vehicle_type): static
     {
         $this->vehicle_type = $vehicle_type;
-
         return $this;
     }
 
@@ -68,7 +68,6 @@ class Vehicle
     public function removeUser(User $user): static
     {
         $this->user->removeElement($user);
-
         return $this;
     }
 
