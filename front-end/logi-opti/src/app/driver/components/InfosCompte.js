@@ -1,3 +1,4 @@
+
 export default function InfosCompte({user}) {
 
     if (!user) return <div>Loading...</div>;
