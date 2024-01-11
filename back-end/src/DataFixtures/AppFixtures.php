@@ -174,7 +174,7 @@ class AppFixtures extends Fixture
                 $delivery = new Delivery();
                 $delivery
                     ->setStartDate(new \DateTime())
-                    ->setEndDate(new \DateTime('+' . random_int(1, 10) . ' hour'))
+                    ->setEndDate(new \DateTime('+' . random_int(1, 3) . ' hour'))
                     ->setTollCost(10 * $i)
                     ->setEnergyCost(20 * $i)
                     ->setUsingCost(15 * $i)
