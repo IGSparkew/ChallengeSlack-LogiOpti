@@ -4,4 +4,5 @@
 
 - use ```php bin/console lexik:jwt:generate-keypair``` to genrate jwt token in API
 
-- add PathPhrase in .env 
+- add JWT_PASSPHRASE in .env 
+

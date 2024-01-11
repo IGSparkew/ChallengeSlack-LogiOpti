@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\VehicleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VehicleRepository::class)]
@@ -16,23 +15,20 @@ class Vehicle
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $type = null;
+    #[ORM\ManyToOne(inversedBy: 'vehicles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?VehicleType $vehicle_type = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $max_load = null;
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'vehicles')]
+    private Collection $user;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
-    private ?string $kilometer_cost = null;
 
     #[ORM\OneToMany(mappedBy: 'vehicle', targetEntity: Delivery::class)]
     private Collection $deliveries;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
-    private ?string $average_comsumption = null;
-
     public function __construct()
     {
+        $this->user = new ArrayCollection();
         $this->deliveries = new ArrayCollection();
     }
 
@@ -41,39 +37,37 @@ class Vehicle
         return $this->id;
     }
 
-    public function getType(): ?string
+    public function getVehicleType(): ?VehicleType
     {
-        return $this->type;
+        return $this->vehicle_type;
     }
 
-    public function setType(?string $type): static
+    public function setVehicleType(?VehicleType $vehicle_type): static
     {
-        $this->type = $type;
+        $this->vehicle_type = $vehicle_type;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUser(): Collection
+    {
+        return $this->user;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->user->contains($user)) {
+            $this->user->add($user);
+        }
 
         return $this;
     }
 
-    public function getMaxLoad(): ?int
+    public function removeUser(User $user): static
     {
-        return $this->max_load;
-    }
-
-    public function setMaxLoad(?int $max_load): static
-    {
-        $this->max_load = $max_load;
-
-        return $this;
-    }
-
-    public function getKilometerCost(): ?string
-    {
-        return $this->kilometer_cost;
-    }
-
-    public function setKilometerCost(?string $kilometer_cost): static
-    {
-        $this->kilometer_cost = $kilometer_cost;
-
+        $this->user->removeElement($user);
         return $this;
     }
 
@@ -107,15 +101,14 @@ class Vehicle
         return $this;
     }
 
-    public function getAverageComsumption(): ?string
+    public function convertVehicleEntityToArray(Vehicle $vehicle): array
     {
-        return $this->average_comsumption;
-    }
+        $vehicleType = new VehicleType();
+        $vehicleArray = [
+            'id' => $vehicle->getId(),
+            'vehicleType' => $vehicle->getVehicleType() ? $vehicleType->convertVehicleTypeEntityToArray($vehicle->getVehicleType()) : null,
+        ];
 
-    public function setAverageComsumption(?string $average_comsumption): static
-    {
-        $this->average_comsumption = $average_comsumption;
-
-        return $this;
+        return $vehicleArray;
     }
 }
