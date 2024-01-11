@@ -23,3 +23,5 @@ class UserController extends AbstractController
         return $this->json(["role"=>$user->getRoles()]);
     }
 }
+
+//CRUD complet
