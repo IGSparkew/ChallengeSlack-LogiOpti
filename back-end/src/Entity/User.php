@@ -219,11 +219,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function convertUserEntityToArray(User $user): array
     {
+        $vehicle = new Vehicle();
+
         $userArray = [
             'id' => $user->getId(),
+            'email' => $user->getEmail(),
             'lastname' => $user->getLastName(),
             'firstname' => $user->getFirstName(),
-            'salary' => $user->getSalary()
+            'salary' => $user->getSalary(),
+            'vehicle_id' => $user->getVehicles()[0] ? $vehicle->convertVehicleEntityToArray($user->getVehicles()[0]) : null
         ];
 
         return $userArray;
