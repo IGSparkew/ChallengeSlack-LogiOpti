@@ -15,4 +15,5 @@
 symfony.lock
 composer.lock
 ../.idea
+.DS_STORE
 
