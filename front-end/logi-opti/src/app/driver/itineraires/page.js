@@ -1,12 +1,14 @@
 'use client'
-import DerniersTrajets from "./components/DerniersTrajets";
-import TrajetsAVenir from "./components/TrajetsAVenir";
-import Header from "./components/Header";
-import ModalArrivee from "./components/ModalArrivee";
-import ModalDetails from "./components/ModalDetails";
-import ModalAjoutUpdate from "./components/ModalAjoutUpdate";
-import Titre from "./components/Titre";
+import DerniersTrajets from "../components/DerniersTrajets";
+import TrajetsAVenir from "../components/TrajetsAVenir";
+import Header from "../components/Header";
+import ModalArrivee from "../components/ModalArrivee";
+import ModalDetails from "../components/ModalDetails";
+import ModalAjoutUpdate from "../components/ModalAjoutUpdate";
+import Maps from "../components/Maps";
 import { useState } from "react";
+import Titre from "../components/Titre";
+
 
 export default function Driver() {
 
@@ -32,14 +34,13 @@ export default function Driver() {
         <main>
             <Header/>
             <div className="flex flex-col gap-8 text-black px-10 mt-12  w-full">
-                <Titre page="Trajets"/>
+                <Titre page="Itinéraires"/>
                 <TrajetsAVenir setOpenArrivee={handleSetOpenArrivee} setOpenAjout={handleSetOpenAjout} setOpenUpdate={handleSetOpenUpdate} setOpenDetails={handleSetOpenDetails}/>
-                <DerniersTrajets setOpen= {handleSetOpenDetails}/>
+                <Maps/>
+
             </div>
 
-            <ModalArrivee openArrivee={openArrivee} setOpenArrivee={setOpenArrivee}/>
-            <ModalDetails openDetails={openDetails} setOpenDetails={setOpenDetails}/>
-            <ModalAjoutUpdate openAjout={openAjout} openUpdate={openUpdate} setOpenAjout={setOpenAjout} setOpenUpdate={setOpenUpdate}/>
+            <ModalArrivee/>
         </main>
     );
 }
