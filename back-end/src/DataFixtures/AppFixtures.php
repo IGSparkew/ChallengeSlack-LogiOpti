@@ -190,8 +190,8 @@ class AppFixtures extends Fixture
                 ->setTime(120 * $i)
                 ->setStatus(array_rand(Delivery::Status))
 
-                ->setVehicle($vehicle2)
-                ->setUser($user2);
+                ->setVehicle($i % 2 ? $vehicle2 : $vehicle1)
+                ->setUser($i % 2 ? $user1 : $user3);
 
             $manager->persist($delivery);
             array_push($deliveries, $delivery);
