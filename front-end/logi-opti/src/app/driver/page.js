@@ -18,6 +18,7 @@ export default function Driver() {
     const [openAjout,setOpenAjout] = useState(false);
     const [openUpdate,setOpenUpdate] = useState(false);
 
+
     const router = useRouter();
 
     const handleSetOpenDetails = (data) => {
@@ -32,6 +33,7 @@ export default function Driver() {
     const handleSetOpenUpdate = (data) => {
         setOpenUpdate(data);
     }
+
 
     useEffect(() => {
         if (!isDriverUser()) {
