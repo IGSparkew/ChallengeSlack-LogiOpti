@@ -21,28 +21,33 @@ class AddressRepository extends ServiceEntityRepository
         parent::__construct($registry, Address::class);
     }
 
-//    /**
-//     * @return Address[] Returns an array of Address objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Address[] Returns an array of Address objects
+     */
+    public function findByExisting($country, $region, $city, $postal_code, $street): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.country = :country')
+            ->andWhere('a.region = :region')
+            ->andWhere('a.city = :city')
+            ->andWhere('a.postal_code = :postal_code')
+            ->andWhere('a.street = :street')
+            ->setParameter('country', $country)
+            ->setParameter('region', $region)
+            ->setParameter('city', $city)
+            ->setParameter('postal_code', $postal_code)
+            ->setParameter('street', $street)
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Address
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    public function findOneBySomeField($value): ?Address
+    //    {
+    //        return $this->createQueryBuilder('a')
+    //            ->andWhere('a.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

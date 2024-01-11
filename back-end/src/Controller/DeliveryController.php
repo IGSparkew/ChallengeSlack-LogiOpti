@@ -6,11 +6,11 @@ use App\Entity\Address;
 use App\Entity\Delivery;
 use App\Entity\DeliveryAddress;
 use App\Entity\User;
-use App\Entity\Vehicle;
 use App\Entity\VehicleType;
 use App\Middleware\AuthentificationMiddleware;
 use DateInterval;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,13 +19,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use GuzzleHttp\Client;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api/delivery', name: 'api_')]
 class DeliveryController extends AbstractController
 {
-    public function __construct(private AuthentificationMiddleware $authentificationMiddleware)
+    private $entityManager;
+    public function __construct(private AuthentificationMiddleware $authentificationMiddleware, EntityManagerInterface $entityManager)
     {
+        $this->entityManager = $entityManager;
     }
 
     const UPCOMING = 0;
@@ -33,7 +34,7 @@ class DeliveryController extends AbstractController
     const STATUS_END = 2;
 
     #[Route('/add', name: 'delivery_create', methods: ['post'])]
-    public function create(ManagerRegistry $doctrine, Request $request, #[CurrentUser] ?User $user): JsonResponse
+    public function create(ManagerRegistry $doctrine, Request $request): JsonResponse
     {
         if (!$this->authentificationMiddleware->checkIfUserDriver($request)) {
             return $this->json([
@@ -47,27 +48,32 @@ class DeliveryController extends AbstractController
         $entityManager = $doctrine->getManager();
         $data = json_decode($request->getContent(), true);
         $vehicleType = $doctrine->getRepository(VehicleType::class)->find($data['id_vehicule']);
+        $user = $doctrine->getRepository(User::class)->findOneBy(['email' => $this->authentificationMiddleware->getUsername($request)]);
+        $vehicles = $user->getVehicles();
 
-        $vehicle = new Vehicle();
-        $vehicle->setVehicleType($vehicleType);
-        $vehicle->addUser($user);
-        $entityManager->persist($vehicle);
+        $addressRepo = $this->entityManager->getRepository(Address::class);
+        $addressStart = $addressRepo->findByExisting($data['start_country'], $data['start_region'], $data['start_city'], $data['start_postal_code'], $data['start_street'])[0];
+        $addressEnd = $addressRepo->findByExisting($data['end_country'], $data['end_region'], $data['end_city'], $data['end_postal_code'], $data['end_street'])[0];
 
-        $addressStart = new Address();
-        $addressStart->setCountry($data['start_country']);
-        $addressStart->setRegion($data['start_region']);
-        $addressStart->setCity($data['start_city']);
-        $addressStart->setStreet($data['start_street']);
-        $addressStart->setPostalCode($data['start_postal_code']);
-        $entityManager->persist($addressStart);
+        if (empty($addressStart)) {
+            $addressStart = new Address();
+            $addressStart->setCountry($data['start_country']);
+            $addressStart->setRegion($data['start_region']);
+            $addressStart->setCity($data['start_city']);
+            $addressStart->setStreet($data['start_street']);
+            $addressStart->setPostalCode($data['start_postal_code']);
+            $entityManager->persist($addressStart);
+        }
 
-        $addressEnd = new Address();
-        $addressEnd->setCountry($data['end_country']);
-        $addressEnd->setRegion($data['end_region']);
-        $addressEnd->setCity($data['end_city']);
-        $addressEnd->setStreet($data['end_street']);
-        $addressEnd->setPostalCode($data['end_postal_code']);
-        $entityManager->persist($addressEnd);
+        if (empty($addressEnd)) {
+            $addressEnd = new Address();
+            $addressEnd->setCountry($data['end_country']);
+            $addressEnd->setRegion($data['end_region']);
+            $addressEnd->setCity($data['end_city']);
+            $addressEnd->setStreet($data['end_street']);
+            $addressEnd->setPostalCode($data['end_postal_code']);
+            $entityManager->persist($addressEnd);
+        }
 
         $deliveryAddress = new DeliveryAddress();
         $deliveryAddress->setAddressEnd($addressEnd);
@@ -135,7 +141,7 @@ class DeliveryController extends AbstractController
         $delivery->setArrayCoordinates(json_encode(array_map('array_reverse', $coordinates)));
         $delivery->setEndDate($endDateProvisional);
         $delivery->setStatus(self::UPCOMING);
-        $delivery->setVehicle($vehicle);
+        $delivery->setVehicle($vehicles[0]);
         $delivery->setUser($user);
 
         $deliveryAddress->setDelivery($delivery);
@@ -143,7 +149,7 @@ class DeliveryController extends AbstractController
         $entityManager->persist($delivery);
 
         $entityManager->flush();
-        if ($entityManager->contains($delivery) && $entityManager->contains($deliveryAddress) && $entityManager->contains($addressEnd) && $entityManager->contains($addressStart) && $entityManager->contains($vehicle)) {
+        if ($entityManager->contains($delivery) && $entityManager->contains($deliveryAddress) && $entityManager->contains($addressEnd) && $entityManager->contains($addressStart)) {
             return new JsonResponse(['message' => 'Le trajet a été enregistré !'], 200);
         } else {
             return new JsonResponse(['error' => 'Une erreur s\'est produite lors de l\'enregistrement en base de données.'], 500);

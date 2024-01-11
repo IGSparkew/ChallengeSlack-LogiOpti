@@ -39,7 +39,7 @@ class Delivery
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $distance = null;
-d
+    
     #[ORM\Column(length: 4000000000, nullable: true)]
     private ?string $array_coordinates = null;
 
