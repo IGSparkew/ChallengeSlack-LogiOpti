@@ -1,6 +1,13 @@
 'use client';
 
+import { redirect } from "next/dist/server/api-utils";
+import { ApiService } from "../services/apiService";
+import { useRouter } from "next/navigation";
+
 export default function Login() {
+
+    const api = new ApiService();
+    const router = useRouter();
 
     async function authSubmit(event) {
         event.preventDefault();
@@ -12,40 +19,38 @@ export default function Login() {
                 const user = createUser(email, password);
                 const res = await login(user);
                 if (res != null && res.token != null) {
+                    const role = await getRole(res.token);
                     localStorage.setItem("token", res.token);
-                    const role = getRole(res.token);
-                    
+                    localStorage.setItem("role", role.role[0]);
+                    redirectUserTo();
                 }
             }
         }
     }
 
+    function redirectUserTo() {
+        let role = localStorage.getItem("role");
+        if (role != null) {
+            switch (role) {
+                case "ROLE_DRIVER":
+                    router.push('/driver', "push");
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+    }
+
     async function login(user) {  
         if (user != null && user.username != null && user.password != null) {
-            const res = await fetch("http://localhost:8000/login", {
-                    method: "POST",
-                    cache: "no-cache",
-                    headers: {
-                        "Content-Type": "application/json",                        
-                    },
-                    body: JSON.stringify(user)
-                });
-            return  res.json();
+            return await api.post('/login', user);
         } 
     }
 
     async function getRole(token) {  
         if (token != null) {
-            const bearerToken =  "Bearer " + token;
-            const res = await fetch("http://localhost:8000/api/user/role", {
-                    method: "GET",
-                    cache: "no-cache",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": bearerToken                
-                    },
-                });
-            return  res.json();
+          return await api.get('/api/user/role', token);
         } 
     }
 
