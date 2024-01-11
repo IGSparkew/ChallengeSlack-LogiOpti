@@ -79,7 +79,7 @@ const table = ({data, setSelectedMoyen,setSelectedTemps,selectedTemps}) => {
                                     <p className='text-gray-600 sm:text-left text-right'>{order.endAddress?.city}</p>
                                     <p className='hidden md:flex'>{formatDate(order.start_date?.date)}</p>
                                     <p>{formatDate(order.end_date?.date)}</p>
-                                    <p className='text-gray-600 sm:text-left text-right'>{order.fuelVolume.toFixed(2)} L</p>
+                                    <p className='text-gray-600 sm:text-left text-right'> {order.fuelVolume !== undefined ? order.fuelVolume.toFixed(2) + ' L' : ''}</p>
                                     <p className='hidden md:flex'>{order.energy_cost} €</p>
                                     <p className='text-gray-600 sm:text-left text-right'>{order.using_cost} €</p>
                                 </li>
