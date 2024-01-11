@@ -39,7 +39,7 @@ class DeliveryRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('d')
             ->join('d.vehicle', 'v')
-            ->join('v.vehicleType', 'vt')
+            ->join('v.vehicle_type', 'vt')
             ->where('d.start_date BETWEEN :startDate AND :endDate')
             ->orWhere('d.end_date BETWEEN :startDate AND :endDate')
             ->andWhere('vt.type = :vehicleType')

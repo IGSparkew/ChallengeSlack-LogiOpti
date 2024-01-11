@@ -7,6 +7,7 @@ use App\Entity\Delivery;
 use App\Entity\DeliveryAddress;
 use App\Entity\User;
 use App\Entity\VehicleType;
+use App\Entity\Vehicle;
 use App\Middleware\AuthentificationMiddleware;
 use DateInterval;
 use DateTime;
@@ -47,9 +48,13 @@ class DeliveryController extends AbstractController
         $urlDelivery = 'https://api.myptv.com/routing/v1/routes?';
         $entityManager = $doctrine->getManager();
         $data = json_decode($request->getContent(), true);
+
+        $vehicle = new Vehicle();
         $vehicleType = $doctrine->getRepository(VehicleType::class)->find($data['id_vehicule']);
+        $vehicle->setVehicleType($vehicleType);
+
         $user = $doctrine->getRepository(User::class)->findOneBy(['email' => $this->authentificationMiddleware->getUsername($request)]);
-        $vehicles = $user->getVehicles();
+        $vehicle->addUser($user);
 
         $addressRepo = $this->entityManager->getRepository(Address::class);
         $addressStart = $addressRepo->findByExisting($data['start_country'], $data['start_region'], $data['start_city'], $data['start_postal_code'], $data['start_street'])[0];
@@ -141,11 +146,13 @@ class DeliveryController extends AbstractController
         $delivery->setArrayCoordinates(json_encode(array_map('array_reverse', $coordinates)));
         $delivery->setEndDate($endDateProvisional);
         $delivery->setStatus(self::UPCOMING);
-        $delivery->setVehicle($vehicles[0]);
+        $delivery->setVehicle($vehicle);
         $delivery->setUser($user);
 
         $deliveryAddress->setDelivery($delivery);
         $entityManager->persist($deliveryAddress);
+        $vehicle->addDelivery($delivery);
+        $entityManager->persist($vehicle);
         $entityManager->persist($delivery);
 
         $entityManager->flush();

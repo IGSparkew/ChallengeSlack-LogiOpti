@@ -65,11 +65,21 @@ class StatisticsController extends AbstractController
 
                 return new JsonResponse([$result], 200);
                 break;
-            case "camion":
+            case "truck":
                 $deliveryRepository = $this->entityManager->getRepository(Delivery::class);
                 $deliveriesResult = $deliveryRepository->findBetweenDateAndTruckType($startDate, $endDate, $truckType);
 
                 foreach ($deliveriesResult as $deliveryResult) {
+
+                    $prixEssenceVehicle = $deliveryResult->getEnergyCost();
+                    // Ajout au cout essence total
+                    $prixEssenceTotal += $prixEssenceVehicle;
+                    $volumeEssenceVehicle = $prixEssenceVehicle / $this->prixEssence;
+                    // Ajout au volume essence total
+                    $volumeEssenceTotal += $volumeEssenceVehicle;
+                    // Ajout au cout usure total
+                    $coutUsureTotal += $deliveryResult->getUsingCost();
+
                     $deliveryDTO = $deliveryResult->convertDeliveryEntityToArray($deliveryResult, $doctrine);
                     array_push($deliveries, $deliveryDTO);
                 }
@@ -86,10 +96,6 @@ class StatisticsController extends AbstractController
                 return new JsonResponse([$result], 200);
                 break;
         }
-        // deliveriesToReturn = s
-
-        // dd($deliveries);
-
     }
 
 
