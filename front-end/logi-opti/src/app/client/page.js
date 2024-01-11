@@ -15,8 +15,12 @@ import { data6} from '../data/data6';
 import React, { useState,useEffect } from 'react';
 import ListeCamion from "./components/ListeCamion";
 
+import { ApiService } from "@/app/services/apiService";
+
 
 export default function Client() {
+
+    const api = new ApiService();
 
     const [selectedTemps, setSelectedTemps] = useState("day");
     const [dataFinal, setDataFinal] = useState(data1);
@@ -25,34 +29,43 @@ export default function Client() {
 
 
     useEffect(() => {
-        
-        if (selectedTemps == "day"){
-            setDataFinal(data1);
-        }
-        else if(selectedTemps == "month"){
-            setDataFinal(data2);
-        }
-        else if(selectedTemps == "year"){
-            setDataFinal(data3);
-        }
-        else if(selectedTemps == "dayCamion"){
-            setDataFinal(data4);
-        }
-        else if(selectedTemps == "monthCamion"){
-            setDataFinal(data5);
-        }
-        else{
-            setDataFinal(data6);
-
-        }
-
-        console.log("Temps dans page.js : ",selectedTemps)
+        const fetchData = async () => {
+          try {
+            if (selectedTemps === "day") {
+              const currentDateObj = new Date();
+              const isoDateString = currentDateObj.toISOString();
+              const formattedDate = isoDateString.slice(0, 10);
     
-    }, [selectedTemps]);
-
-    useEffect(() => {
+              console.log(formattedDate);
     
-    }, [selectedMoyen]);
+              const token = localStorage.getItem("token");
+              const data = await api.get(`/api/statistics/getDaylyToTal/${formattedDate}/day/trajet`, token);
+              setDataFinal(data[0]["livraisons"]);
+            } else if (selectedTemps === "month") {
+              setDataFinal(data2);
+            } else if (selectedTemps === "year") {
+              setDataFinal(data3);
+            } else if (selectedTemps === "dayCamion") {
+              setDataFinal(data4);
+            } else if (selectedTemps === "monthCamion") {
+              setDataFinal(data5);
+            } else {
+              setDataFinal(data6);
+            }
+    
+            console.log("Temps dans page.js : ", selectedTemps);
+          } catch (error) {
+            console.error("Erreur lors de la récupération des données :", error);
+            // Gérer les erreurs ici
+          }
+        };
+    
+        fetchData();
+      }, [selectedTemps]);
+    
+      useEffect(() => {
+        // Effectuez des actions si nécessaire lors de la modification de selectedMoyen
+      }, [selectedMoyen]);
 
 
     const handleSelectedTemps = (data) => {
