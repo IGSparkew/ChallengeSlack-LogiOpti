@@ -24,6 +24,7 @@ export default function Client() {
 
     const [selectedTemps, setSelectedTemps] = useState("day");
     const [dataFinal, setDataFinal] = useState(data1);
+    const [dataGlobal,setDataGlobal] = useState([]);
     const [selectedMoyen,setSelectedMoyen] =useState("trajet");
 
 
@@ -36,11 +37,11 @@ export default function Client() {
               const isoDateString = currentDateObj.toISOString();
               const formattedDate = isoDateString.slice(0, 10);
     
-              console.log(formattedDate);
-    
               const token = localStorage.getItem("token");
               const data = await api.get(`/api/statistics/getDaylyToTal/${formattedDate}/day/trajet`, token);
               setDataFinal(data[0]["livraisons"]);
+              setDataGlobal(data[0]["cout_totaux"]);
+              console.log(data[0]["cout_totaux"]);
             } else if (selectedTemps === "month") {
               setDataFinal(data2);
             } else if (selectedTemps === "year") {
@@ -89,7 +90,7 @@ export default function Client() {
             <Sidebar />
             <div className="flex-auto" >
                 <Header />
-                <TopCards />
+                <TopCards dataGlobal={dataGlobal}/>
                 <Temps setSelectedTemps={handleSelectedTemps} setSelectedMoyen={setSelectedMoyen} selectedMoyen={selectedMoyen} selectedTemps={selectedTemps}/>
                 { selectedTemps == "day" ? (
                     <MyDatePicker />
