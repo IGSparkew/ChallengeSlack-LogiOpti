@@ -28,7 +28,7 @@ class DeliveryRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('d')
             ->where('d.start_date BETWEEN :startDate AND :endDate')
-            ->orWhere('d.end_date BETWEEN :startDate AND :endDate')
+            ->andWhere('d.end_date BETWEEN :startDate AND :endDate')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
             ->getQuery()
@@ -41,7 +41,7 @@ class DeliveryRepository extends ServiceEntityRepository
             ->join('d.vehicle', 'v')
             ->join('v.vehicle_type', 'vt')
             ->where('d.start_date BETWEEN :startDate AND :endDate')
-            ->orWhere('d.end_date BETWEEN :startDate AND :endDate')
+            ->andWhere('d.end_date BETWEEN :startDate AND :endDate')
             ->andWhere('vt.type = :vehicleType')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
