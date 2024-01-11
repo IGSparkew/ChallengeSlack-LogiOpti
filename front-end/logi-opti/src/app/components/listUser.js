@@ -2,7 +2,7 @@ import React from 'react';
 import { BsPersonFill, BsThreeDotsVertical, BsTruck } from 'react-icons/bs';
 import { data } from '../data/data';
 
-const table = () => {
+const listUser = () => {
     return (
         <div className='  min-h-screen'>
             <div className='flex justify-between p-4'>
@@ -19,7 +19,7 @@ const table = () => {
                     </div>
                     <ul>
                         {data.map((order, id) => (
-                            <li key={id} className='bg-red-50 hover:bg-gray-100 rounded-lg my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer'>
+                            <li key={id} className='bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer'>
                                 <div className='flex items-center'>
                                     <div className='bg-purple-100 p-3 rounded-lg'>
                                         <BsTruck className='text-purple-800' />
@@ -41,4 +41,4 @@ const table = () => {
     );
 };
 
-export default table;
+export default listUser;

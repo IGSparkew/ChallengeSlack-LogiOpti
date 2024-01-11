@@ -6,8 +6,8 @@ const table = () => {
     return (
         <div className='  min-h-screen'>
             <div className='flex justify-between p-4'>
-                <button className='bs'>Trajet</button>
-                <h2>Welcome Back, Clint</h2>
+                <button className='bs'>Action</button>
+                <button type="button" class="mr-9  bg-blue-500 hover:bg-blue-700 text-white py-4 px-2 p-1r rounded focus:outline-none focus:shadow-outline">Ajouter</button>
             </div>
             <div className='p-4'>
                 <div className='w-full m-auto p-4 border rounded-lg bg-white overflow-y-auto'>
@@ -15,7 +15,7 @@ const table = () => {
                         <span>Name</span>
                         <span className='sm:text-left text-right'>Email</span>
                         <span className='hidden md:grid'>Last Order</span>
-                        <span className='hidden sm:grid'>Method</span>
+                        <span className='hidden sm:grid'>Action</span>
                     </div>
                     <ul>
                         {data.map((order, id) => (
@@ -29,7 +29,8 @@ const table = () => {
                                 <p className='text-gray-600 sm:text-left text-right'>{order.name.first}@gmail.com</p>
                                 <p className='hidden md:flex'>{order.date}</p>
                                 <div className='sm:flex hidden justify-between items-center'>
-                                    <p>{order.method}</p>
+                                    <button className="bg-green-300">Modifier</button>
+                                    <button className="bg-red-300">Supprimer</button>
                                     <BsThreeDotsVertical />
                                 </div>
                             </li>

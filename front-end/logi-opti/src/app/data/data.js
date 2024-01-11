@@ -15,6 +15,7 @@ export const data = [
         name: {
             first: 'Chris',
             last: 'Adams',
+
         },
         total: 1195.95,
         status: 'Processing',
