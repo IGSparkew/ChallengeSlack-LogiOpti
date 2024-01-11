@@ -43,6 +43,28 @@ class AuthentificationMiddleware {
         return [];
     }
 
+    public function getUsername(Request $request)
+    {
+        if ($request != null) {
+            $authorizationHeader = $request->headers->get('Authorization');
+            if ($authorizationHeader != null) {
+                $headerPart = explode(" ", $authorizationHeader);
+                $username = $this->getUserFromToken($headerPart);
+                if (!empty($username)) {
+                    return $username;
+                }
+            }
+        }
+        return false;
+    }
+private function getUserFromToken($headerToken): string
+    {
+        if (empty($headerToken)) return [];
+        $jwtPayload = $this->decodePayload($headerToken);
+        if ($jwtPayload == null) return [];
+        return $jwtPayload->username;
+    }
+
     public function checkRole(Request $request, $roleVerified) {
         $isVerified = $this->verify($request);
         if ($isVerified) {

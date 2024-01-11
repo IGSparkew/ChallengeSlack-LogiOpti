@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-    public function __construct(private AuthentificationMiddleware $authentificationMiddleware) { }
+    public function __construct(private AuthentificationMiddleware $authentificationMiddleware, private UserRepository $userRepository) { }
 
     #[Route('/api/user/role', name: 'app_role', methods: ["GET"])]
     public function getRole(Request $request): Response
@@ -49,6 +49,21 @@ class UserController extends AbstractController
         }
         return $this->json(['message' => "Missing Id"], 500);
     }
+
+    #[Route('/api/user/get', name: 'app_get_current', methods: ["GET"])]
+    public function getCurrentUser(Request $request): jsonResponse
+    {
+
+        if (!$this->authentificationMiddleware->verify($request)) {
+            return $this->json([
+                'message' => 'You are not authentified or doesn\'t have the right to access this page'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $user = $this->userRepository->findOneBy(['email' => $this->authentificationMiddleware->getUsername($request)]);
+        return $this->json([$user->convertUserEntityToArray($user)]);
+    }
+
 }
 
 //CRUD complet
