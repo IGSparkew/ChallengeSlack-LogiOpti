@@ -57,8 +57,8 @@ class DeliveryController extends AbstractController
         $vehicle->addUser($user);
 
         $addressRepo = $this->entityManager->getRepository(Address::class);
-        $addressStart = $addressRepo->findByExisting($data['start_country'], $data['start_region'], $data['start_city'], $data['start_postal_code'], $data['start_street'])[0];
-        $addressEnd = $addressRepo->findByExisting($data['end_country'], $data['end_region'], $data['end_city'], $data['end_postal_code'], $data['end_street'])[0];
+        $addressStart = $addressRepo->findByExisting($data['start_country'], $data['start_region'], $data['start_city'], $data['start_postal_code'], $data['start_street']);
+        $addressEnd = $addressRepo->findByExisting($data['end_country'], $data['end_region'], $data['end_city'], $data['end_postal_code'], $data['end_street']);
 
         if (empty($addressStart)) {
             $addressStart = new Address();
