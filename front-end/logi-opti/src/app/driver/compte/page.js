@@ -1,8 +1,22 @@
+"use client"
+
 import Titre from "../components/Titre";
 import Header from "../components/Header";
 import InfosCompte from "../components/InfosCompte";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { isDriverUser } from "@/app/middleware/authMiddleware";
 
 export default function Compte() {
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isDriverUser()) {
+            router.push('/', "push");
+        }
+    }, []);
+
     return(
         <main>
             <Header/>

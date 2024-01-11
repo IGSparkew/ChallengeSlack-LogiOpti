@@ -8,7 +8,9 @@ import ModalAjoutUpdate from "../components/ModalAjoutUpdate";
 import Maps from "../components/Maps";
 import { useState } from "react";
 import Titre from "../components/Titre";
-
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { isDriverUser } from "@/app/middleware/authMiddleware";
 
 export default function Driver() {
 
@@ -16,6 +18,14 @@ export default function Driver() {
     const [openArrivee,setOpenArrivee] = useState(false);
     const [openAjout,setOpenAjout] = useState(false);
     const [openUpdate,setOpenUpdate] = useState(false);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isDriverUser()) {
+            router.push('/', "push");
+        }
+    }, []);
 
     const handleSetOpenDetails = (data) => {
         setOpenDetails(data);
