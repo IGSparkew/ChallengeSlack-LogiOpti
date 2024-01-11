@@ -1,15 +1,16 @@
-
 'use client'
-import DerniersTrajets from "./components/DerniersTrajets";
-import TrajetsAVenir from "./components/TrajetsAVenir";
-import Header from "./components/Header";
-import ModalArrivee from "./components/ModalArrivee";
-import ModalDetails from "./components/ModalDetails";
-import ModalAjoutUpdate from "./components/ModalAjoutUpdate";
-import Titre from "./components/Titre";
-import { useState, useEffect } from "react";
-import { isDriverUser } from "../middleware/authMiddleware";
+import DerniersTrajets from "../components/DerniersTrajets";
+import TrajetsAVenir from "../components/TrajetsAVenir";
+import Header from "../components/Header";
+import ModalArrivee from "../components/ModalArrivee";
+import ModalDetails from "../components/ModalDetails";
+import ModalAjoutUpdate from "../components/ModalAjoutUpdate";
+import Maps from "../components/Maps";
+import { useState } from "react";
+import Titre from "../components/Titre";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { isDriverUser } from "@/app/middleware/authMiddleware";
 
 export default function Driver() {
 
@@ -19,6 +20,12 @@ export default function Driver() {
     const [openUpdate,setOpenUpdate] = useState(false);
 
     const router = useRouter();
+
+    useEffect(() => {
+        if (!isDriverUser()) {
+            router.push('/', "push");
+        }
+    }, []);
 
     const handleSetOpenDetails = (data) => {
         setOpenDetails(data);
@@ -33,24 +40,17 @@ export default function Driver() {
         setOpenUpdate(data);
     }
 
-    useEffect(() => {
-        if (!isDriverUser()) {
-            router.push('/', "push");
-        }
-    }, []);
-
     return(
         <main>
             <Header/>
             <div className="flex flex-col gap-8 text-black px-10 mt-12  w-full">
-                <Titre page="Trajets"/>
+                <Titre page="Itinéraires"/>
                 <TrajetsAVenir setOpenArrivee={handleSetOpenArrivee} setOpenAjout={handleSetOpenAjout} setOpenUpdate={handleSetOpenUpdate} setOpenDetails={handleSetOpenDetails}/>
-                <DerniersTrajets setOpen= {handleSetOpenDetails}/>
+                <Maps/>
+
             </div>
 
-            <ModalArrivee openArrivee={openArrivee} setOpenArrivee={setOpenArrivee}/>
-            <ModalDetails openDetails={openDetails} setOpenDetails={setOpenDetails}/>
-            <ModalAjoutUpdate openAjout={openAjout} openUpdate={openUpdate} setOpenAjout={setOpenAjout} setOpenUpdate={setOpenUpdate}/>
+            <ModalArrivee/>
         </main>
     );
 }
