@@ -66,6 +66,18 @@
   background-color: rgba(162, 71, 98, 0.24);
 }
 
+.navbar-show {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.navbar-hide {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
 
 
 
