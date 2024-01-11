@@ -5,10 +5,6 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -45,18 +41,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
     private ?string $salary = null;
-
-    #[ORM\ManyToMany(targetEntity: Vehicle::class, mappedBy: 'user')]
-    private Collection $vehicles;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Delivery::class)]
-    private Collection $deliveries;
-
-    public function __construct()
-    {
-        $this->vehicles = new ArrayCollection();
-        $this->deliveries = new ArrayCollection();
-    }
 
     #[ORM\ManyToMany(targetEntity: Vehicle::class, mappedBy: 'user')]
     private Collection $vehicles;
