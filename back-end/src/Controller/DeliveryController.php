@@ -166,6 +166,7 @@ class DeliveryController extends AbstractController
     #[Route('/get/{id}', name: 'delivery_get', methods: ['get'])]
     public function get(ManagerRegistry $doctrine, int $id, Request $request): JsonResponse
     {
+
         if (!$this->authentificationMiddleware->verify($request)) {
             return $this->json([
                 'message' => 'You are not authentified or doesn\'t have the right to access this page'
@@ -178,15 +179,17 @@ class DeliveryController extends AbstractController
         return $this->json($delivery->convertDeliveryEntityToArray($delivery, $doctrine));
     }
 
-    #[Route('/get', name: 'delivery_get_all', methods: ['get'])]
-    public function getAll(ManagerRegistry $doctrine, Request $request): JsonResponse
+    #[Route('/get', name: 'delivery_get_all_by_user', methods: ['get'])]
+    public function getAllByUser(ManagerRegistry $doctrine, Request $request): JsonResponse
     {
-        if (!$this->authentificationMiddleware->checkIfUserOffice($request)) {
+        if (!$this->authentificationMiddleware->verify($request)) {
             return $this->json([
                 'message' => 'You are not authentified or doesn\'t have the right to access this page'
             ], Response::HTTP_UNAUTHORIZED);
         }
-        $deliveries = $doctrine->getRepository(Delivery::class)->findAll();
+        $user = $doctrine->getRepository(User::class)->findOneBy(['email' => $this->authentificationMiddleware->getUsername($request)]);
+
+        $deliveries = $user->getDeliveries();
         if (empty($deliveries)) {
             return new JsonResponse(['message' => 'Aucun trajet trouvé'], 404);
         }
@@ -197,6 +200,26 @@ class DeliveryController extends AbstractController
         return $this->json($result);
     }
 
+    #[Route('/getAll', name: 'delivery_get_all', methods: ['get'])]
+    public function getAll(ManagerRegistry $doctrine, Request $request): JsonResponse
+    {
+        if (!$this->authentificationMiddleware->verify($request)) {
+            return $this->json([
+                'message' => 'You are not authentified or doesn\'t have the right to access this page'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+        $user = $doctrine->getRepository(User::class)->findOneBy(['email' => $this->authentificationMiddleware->getUsername($request)]);
+
+        $deliveries = $doctrine->getRepository(Delivery::class)->findBy(["user_id"=>$user->getId()]);
+        if (empty($deliveries)) {
+            return new JsonResponse(['message' => 'Aucun trajet trouvé'], 404);
+        }
+        $result = [];
+        foreach ($deliveries as $delivery) {
+            array_push($result, $delivery->convertDeliveryEntityToArray($delivery, $doctrine));
+        }
+        return $this->json($result);
+    }
     #[Route('/delete/{id}', name: 'delivery_delete', methods: ['delete'])]
     public function delete(ManagerRegistry $doctrine, int $id, Request $request): JsonResponse
     {
