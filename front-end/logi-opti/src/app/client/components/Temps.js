@@ -1,13 +1,17 @@
 'use client'
 import React, { useState,useEffect } from 'react';
 
-export default function Temps({setSelectedTemps,setSelectedMoyen,selectedMoyen,selectedTemps}) {
+export default function Temps({setSelectedTemps,setSelectedMoyen,selectedMoyen,selectedTemps,setReset,reset}) {
   const [selectedTab, setSelectedTab] = useState("day");
   const [selectedTabCamion, setSelectedTabCamion] = useState("dayCamion");
 
   const changeColorBg = (tab) => {
 
-    console.log(tab);
+    if(tab == "year" || tab == "month")
+    {
+      setReset(!reset);
+    }
+
       if(tab == "dayCamion" || tab == "monthCamion" || tab == "yearCamion")
       {
         setSelectedTabCamion(tab)

@@ -26,6 +26,7 @@ export default function Client() {
     const [dataFinal, setDataFinal] = useState(data1);
     const [dataGlobal,setDataGlobal] = useState([]);
     const [selectedMoyen,setSelectedMoyen] =useState("trajet");
+    const [reset,setReset] = useState(false);
 
 
 
@@ -43,9 +44,9 @@ export default function Client() {
               setDataGlobal(data[0]["cout_totaux"]);
               console.log(data[0]["cout_totaux"]);
             } else if (selectedTemps === "month") {
-              setDataFinal(data2);
+              setDataFinal([]);
             } else if (selectedTemps === "year") {
-              setDataFinal(data3);
+              setDataFinal([]);
             } else if (selectedTemps === "dayCamion") {
               setDataFinal(data4);
             } else if (selectedTemps === "monthCamion") {
@@ -75,12 +76,22 @@ export default function Client() {
         setSelectedTemps(data)
     }
 
+    const handleReset = (data) => {
+        setReset(data);
+        console.log(reset);
+    }
+
     const handleSelectedMoyen = (data) => {
         console.log("dans la fonction handleSelectedMoyen");
         console.log(data);
         setSelectedMoyen(data)
     }
-    
+
+    const handleSetDataFinal = (data) => {
+        console.log("data", data);
+        setDataFinal(data[0]["livraisons"])
+        setDataGlobal(data[0]["cout_totaux"])
+    }
 
     const conditionTime = selectedTemps === "month" || selectedTemps === "year";
 
@@ -91,11 +102,11 @@ export default function Client() {
             <div className="flex-auto" >
                 <Header />
                 <TopCards dataGlobal={dataGlobal}/>
-                <Temps setSelectedTemps={handleSelectedTemps} setSelectedMoyen={setSelectedMoyen} selectedMoyen={selectedMoyen} selectedTemps={selectedTemps}/>
+                <Temps setSelectedTemps={handleSelectedTemps} setSelectedMoyen={setSelectedMoyen} selectedMoyen={selectedMoyen} selectedTemps={selectedTemps} setReset={handleReset} reset={reset}/>
                 { selectedTemps == "day" ? (
-                    <MyDatePicker />
+                    <MyDatePicker setDataFinal={handleSetDataFinal} />
                 ) : conditionTime ?(
-                    <SelecteurTemps temps={selectedTemps}/>
+                    <SelecteurTemps temps={selectedTemps} setDataFinal={handleSetDataFinal} reset={reset}/>
                 ) : (
                     <ListeCamion />
                 )
