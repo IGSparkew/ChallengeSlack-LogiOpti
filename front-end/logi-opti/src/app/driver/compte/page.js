@@ -11,7 +11,8 @@ import { ApiService } from "@/app/services/apiService";
 
 export default function Compte() {
     const router = useRouter();
-    const [user, setUser] = useState(null); 
+    const [user, setUser] = useState(null);
+    const [trucks, setTrucks] = useState([]) 
     const api = new ApiService();
 
     useEffect(() => {
@@ -19,19 +20,29 @@ export default function Compte() {
             router.push('/', "push");
         }
         const token = localStorage.getItem("token");
+        api.get('/api/vehicle/get',token)
+        .then((data) => {
+            console.log(data);
+            setTrucks(data);
+        });
         api.get('/api/user/get', token)
         .then((data) => {
             setUser(getUser(data[0]));
-        })
+        });
     }, []);
 
     function getUser(data) {
-        return {
+        const user = {
             lastName: data.lastname,
             firstName: data.firstname,
             email: data.email,
             salary: data.salary
         };
+        if (data.vehicle_id) {
+            user.vehicle = data.vehicle_id
+        }
+
+        return user;
     }
 
     return(
@@ -39,7 +50,7 @@ export default function Compte() {
             <Header/>
             <div className="flex flex-col gap-8 text-black px-10 mt-12  w-full">
                 <Titre page="Mon Compte"/>
-                <InfosCompte user={user}/>
+                <InfosCompte user={user} trucks={trucks}/>
             </div>
         </main>
     );
