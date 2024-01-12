@@ -1,10 +1,54 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import { ApiService } from "@/app/services/apiService";
 
-const SelecteurTemps = ({temps}) => {
+
+const SelecteurTemps = ({temps,setDataFinal,reset}) => {
+
+  const api = new ApiService();
+
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
+  const [selectedMonthAPI, setSelectedMonthAPI] = useState("");
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (selectedMonth != null  && selectedYear != null) {
+          console.log(selectedMonth);
+          console.log(selectedYear);
+
+          const date = selectedYear + '-' + selectedMonthAPI + "-01"
+          const token = localStorage.getItem("token");
+          const data = await api.get(`/api/statistics/getDaylyToTal/${date}/month/trajet`, token);
+          console.log(data)
+          setDataFinal(data); 
+        }
+
+       if (selectedMonth == null  && selectedYear != null) {
+
+          const date = selectedYear + '-12-01'
+          const token = localStorage.getItem("token");
+          const data = await api.get(`/api/statistics/getDaylyToTal/${date}/year/trajet`, token);
+          console.log(data)
+          setDataFinal(data); 
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données :", error);
+      }
+    };
+  
+    fetchData();
+  }, [selectedMonth,selectedYear]);
+
+  useEffect(() => {
+      setSelectedYear(null)
+  }, [reset]);
+  
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -14,13 +58,37 @@ const SelecteurTemps = ({temps}) => {
     setIsOpen(false);
   };
 
+
+  const transformerMois = (mois) => {
+    const moisTransforme = {
+      "January": "01",
+      "February": "02",
+      "March": "03",
+      "April": "04",
+      "May": "05",
+      "June": "06",
+      "July": "07",
+      "August": "08",
+      "September": "09",
+      "October": "10",
+      "November": "11",
+      "December": "12",
+    };
+  
+    return moisTransforme[mois] || mois;
+  };
+
+
   const handleMonthChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedMonth(selectedValue);
+    const mois = transformerMois(selectedValue)
+    setSelectedMonthAPI(mois);
     closeDropdown();
   };
 
   const handleYearChange = (event) => {
+    console.log("changer");
     const selectedValue = event.target.value;
     setSelectedYear(selectedValue);
     closeDropdown();

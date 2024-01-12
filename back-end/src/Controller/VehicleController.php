@@ -13,7 +13,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/vehicle', name: 'api_vehicle')]
+
+
+#[Route('/api/vehicle', name: 'api_')]
 class VehicleController extends AbstractController
 {
     public function __construct(private AuthentificationMiddleware $authentificationMiddleware)
@@ -65,11 +67,11 @@ class VehicleController extends AbstractController
     #[Route('/get', name: 'vehicle_get_all', methods: ['get'])]
     public function getAll(ManagerRegistry $doctrine, Request $request): JsonResponse
     {
-        if (!$this->authentificationMiddleware->verify($request)) {
-            return $this->json([
-                'message' => 'You are not authentified or doesn\'t have the right to access this page'
-            ], Response::HTTP_UNAUTHORIZED);
-        }
+        // if (!$this->authentificationMiddleware->verify($request)) {
+        //     return $this->json([
+        //         'message' => 'You are not authentified or doesn\'t have the right to access this page'
+        //     ], Response::HTTP_UNAUTHORIZED);
+        // }
         $vehicles = $doctrine->getRepository(Vehicle::class)->findAll();
         if (empty($vehicles)) {
             return new JsonResponse(['message' => 'Aucun véhicule trouvé'], 404);
