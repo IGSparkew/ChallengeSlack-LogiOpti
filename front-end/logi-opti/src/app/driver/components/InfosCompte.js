@@ -9,7 +9,6 @@ export default function InfosCompte({user, trucks}) {
 
     async function handleUpdateTruck(event) {
         event.preventDefault();
-        console.log(event.target.value)
         setSelected(event.target.value);
     }
 
