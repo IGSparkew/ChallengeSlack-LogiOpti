@@ -35,6 +35,12 @@ export default function Login() {
                 case "ROLE_DRIVER":
                     router.push('/driver', "push");
                     break;
+                case "ROLE_OFFICE":
+                    router.push('/client',"push")
+                    break;
+                case "ROLE_ADMIN":
+                    router.push('/client',"push")
+                    break;
                 default:
                     break;
             }

@@ -1,4 +1,4 @@
-export default function ModalDetails({openDetails, setOpenDetails}) {
+export default function ModalDetails({details,setDetails,openDetails, setOpenDetails}) {
 
 
     return (
@@ -15,44 +15,44 @@ export default function ModalDetails({openDetails, setOpenDetails}) {
                         <h3 className="u-semi text-2xl leading-6 text-center text-gray-900" id="modal-title">Détails du trajet</h3>
                         <div className="mt-5 w-full">
                             <label className="u-m text-sm">Nom du chauffeur</label>
-                           <input value={"BENALIA Mohamed"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
+                           <input value={`${details.lastname} ${details.firstname}`} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
                         </div>
                         <div className="mt-5 w-full">
                             <label className="u-m text-sm">Adresse de départ</label>
-                           <input value={"39 rue Guy de maupassant, 69800"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1 " type="text" />
+                           <input value={`${details.startStreet}, ${details.startPostalCode}`} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1 " type="text" />
                         </div>
                         <div className="mt-5 w-full">
                             <label className="u-m text-sm">Adresse de la destination</label>
-                           <input value={"45 rue Guy de maupassant, 69800"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
+                           <input value={`${details.endStreet}, ${details.endPostalCode}`} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
                         </div>
                         <div className="mt-5 w-full flex gap-2">
                             <div className="w-6/12">
                                 <label className="u-m text-sm">Date de départ</label>
-                                <input value={"23/20/22 11H35"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
+                                <input value={details.startDate} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
                             </div>
                             <div className="w-6/12">
                                 <label className="u-m text-sm">Date d'arrivée</label>
-                                <input value={"23/20/22 11H55"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
+                                <input value={details.endDate} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
                             </div>
                         </div>
                         <div className="mt-5 w-full">
                             <label className="u-m text-sm">Type de véhicule</label>
-                           <input value={"Renault Master"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
+                           <input value={details.vehicleType} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
                         </div>
                         <div className="mt-5 w-full flex gap-2">
                             <div className="w-6/12">
                                 <label className="u-m text-sm">Cout du péage</label>
-                                <input value={"27.55 €"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
+                                <input value={details.tollCost + "€"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
                             </div>
                             <div className="w-6/12">
                                 <label className="u-m text-sm">Cout de l'usure</label>
-                                <input value={"37.58 €"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
+                                <input value={details.usingCost + "€"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
                             </div>
                         </div>
                         <div className="mt-5 w-full flex gap-2">
                             <div className="w-6/12">
                                 <label className="u-m text-sm">Distance parcourue</label>
-                                <input value={"5 km"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
+                                <input value={details.distance + "km"} disabled className="bg-redFullClair w-full h-10 rounded px-5 u-r mt-1" type="text" />
                             </div>
                             <div className="w-6/12">
                                 <label className="u-m text-sm">Durée du trajet</label>
