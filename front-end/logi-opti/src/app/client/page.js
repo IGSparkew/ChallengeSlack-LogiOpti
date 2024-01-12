@@ -27,6 +27,8 @@ export default function Client() {
     const [dataGlobal,setDataGlobal] = useState([]);
     const [selectedMoyen,setSelectedMoyen] =useState("trajet");
     const [reset,setReset] = useState(false);
+    const [selectedTruck, setSelectedTruck] = useState("");
+
 
 
 
@@ -48,11 +50,44 @@ export default function Client() {
             } else if (selectedTemps === "year") {
               setDataFinal([]);
             } else if (selectedTemps === "dayCamion") {
-              setDataFinal(data4);
+                const currentDateObj = new Date();
+                const isoDateString = currentDateObj.toISOString();
+                const formattedDate = isoDateString.slice(0, 10);
+
+                const token = localStorage.getItem("token");
+                const data = await api.get(
+                    `/api/statistics/getDaylyToTal/${formattedDate}/day/truck/${selectedTruck}`,
+                    token
+                );
+                console.log(data);
+                setDataFinal(data[0]["livraisons"]);
+                setDataGlobal(data[0]["cout_totaux"]);
             } else if (selectedTemps === "monthCamion") {
-              setDataFinal(data5);
+                const currentDateObj = new Date();
+                const isoDateString = currentDateObj.toISOString();
+                const formattedDate = isoDateString.slice(0, 10);
+
+                const token = localStorage.getItem("token");
+                const data = await api.get(
+                    `/api/statistics/getDaylyToTal/${formattedDate}/month/truck/${selectedTruck}`,
+                    token
+                );
+                console.log(data);
+                setDataFinal(data[0]["livraisons"]);
+                setDataGlobal(data[0]["cout_totaux"]);
             } else {
-              setDataFinal(data6);
+                const currentDateObj = new Date();
+                const isoDateString = currentDateObj.toISOString();
+                const formattedDate = isoDateString.slice(0, 10);
+
+                const token = localStorage.getItem("token");
+                const data = await api.get(
+                    `/api/statistics/getDaylyToTal/${formattedDate}/year/truck/${selectedTruck}`,
+                    token
+                );
+                console.log(data);
+                setDataFinal(data[0]["livraisons"]);
+                setDataGlobal(data[0]["cout_totaux"]);
             }
     
             console.log("Temps dans page.js : ", selectedTemps);
@@ -63,7 +98,7 @@ export default function Client() {
         };
     
         fetchData();
-      }, [selectedTemps]);
+      }, [selectedTemps,selectedTruck]);
     
       useEffect(() => {
         // Effectuez des actions si nécessaire lors de la modification de selectedMoyen
@@ -93,6 +128,10 @@ export default function Client() {
         setDataGlobal(data[0]["cout_totaux"])
     }
 
+    const handleSelectedTruck = (data) => {
+        setSelectedTruck(data);
+      };
+
     const conditionTime = selectedTemps === "month" || selectedTemps === "year";
 
     return (
@@ -103,14 +142,34 @@ export default function Client() {
                 <Header />
                 <TopCards dataGlobal={dataGlobal}/>
                 <Temps setSelectedTemps={handleSelectedTemps} setSelectedMoyen={setSelectedMoyen} selectedMoyen={selectedMoyen} selectedTemps={selectedTemps} setReset={handleReset} reset={reset}/>
-                { selectedTemps == "day" ? (
-                    <MyDatePicker setDataFinal={handleSetDataFinal} />
-                ) : conditionTime ?(
-                    <SelecteurTemps temps={selectedTemps} setDataFinal={handleSetDataFinal} reset={reset}/>
-                ) : (
-                    <ListeCamion />
-                )
-                }
+                {(() => {
+                        if (selectedTemps === "day") {
+                            return <MyDatePicker setDataFinal={handleSetDataFinal}  />;
+                        } else if (selectedTemps === "dayCamion") {
+                            return (
+                            <>
+                                <MyDatePicker setDataFinal={handleSetDataFinal}  />
+                                <ListeCamion setSelectedTruck={handleSelectedTruck} />
+                            </>
+                            );
+                        } else if (conditionTime) {
+                            return <SelecteurTemps temps={selectedTemps} setDataFinal={handleSetDataFinal} reset={reset}/>;
+                        } else if (selectedTemps == "monthCamion") {
+                            return (
+                            <>
+                                <SelecteurTemps temps={"month"} setDataFinal={handleSetDataFinal} reset={reset}/>
+                                <ListeCamion setSelectedTruck={handleSelectedTruck} />
+                            </>
+                            );
+                        } else if (selectedTemps == "yearCamion") {
+                            return (
+                            <>
+                                <SelecteurTemps temps={"year"} setDataFinal={handleSetDataFinal} reset={reset}/>
+                                <ListeCamion setSelectedTruck={handleSelectedTruck} />
+                            </>
+                            );
+                        }
+                    })()}
                
                 <Table  data ={dataFinal} setSelectedMoyen={handleSelectedMoyen} setSelectedTemps={handleSelectedTemps} selectedTemps={selectedTemps}/>
 
