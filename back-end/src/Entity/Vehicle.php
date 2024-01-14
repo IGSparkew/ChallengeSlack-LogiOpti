@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use App\Entity\Delivery;
+
 #[ORM\Entity(repositoryClass: VehicleRepository::class)]
 class Vehicle
 {
@@ -44,7 +46,6 @@ class Vehicle
     public function setVehicleType(?VehicleType $vehicle_type): static
     {
         $this->vehicle_type = $vehicle_type;
-
         return $this;
     }
 
@@ -68,7 +69,6 @@ class Vehicle
     public function removeUser(User $user): static
     {
         $this->user->removeElement($user);
-
         return $this;
     }
 
