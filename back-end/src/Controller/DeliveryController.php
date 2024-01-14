@@ -35,6 +35,7 @@ class DeliveryController extends AbstractController
     const STATUS_END = 2;
 
     #[Route('/add', name: 'delivery_create', methods: ['post'])]
+
     public function create(ManagerRegistry $doctrine, Request $request): JsonResponse
     {
         if (!$this->authentificationMiddleware->checkIfUserDriver($request)) {
@@ -162,6 +163,7 @@ class DeliveryController extends AbstractController
             return new JsonResponse(['error' => 'Une erreur s\'est produite lors de l\'enregistrement en base de données.'], 500);
         }
     }
+
 
     #[Route('/get/{id}', name: 'delivery_get', methods: ['get'])]
     public function get(ManagerRegistry $doctrine, int $id, Request $request): JsonResponse

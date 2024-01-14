@@ -13,3 +13,4 @@ php bin/console doctrine:fixtures:load
 - use `symfony server:start  ` to genrate jwt token in API
 
 - add JWT_PASSPHRASE in .env
+

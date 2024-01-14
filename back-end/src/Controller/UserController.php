@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+<
 use App\Middleware\AuthentificationMiddleware;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;

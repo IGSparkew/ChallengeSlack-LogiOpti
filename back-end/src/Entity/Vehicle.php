@@ -6,6 +6,7 @@ use App\Repository\VehicleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
 use App\Entity\Delivery;
 
 #[ORM\Entity(repositoryClass: VehicleRepository::class)]
@@ -22,7 +23,6 @@ class Vehicle
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'vehicles')]
     private Collection $user;
-
 
     #[ORM\OneToMany(mappedBy: 'vehicle', targetEntity: Delivery::class)]
     private Collection $deliveries;
