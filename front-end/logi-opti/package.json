@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "chart.js": "^4.4.1",
-        "next": "14.0.4",
+        "next": "14.2.21",
         "react": "^18",
         "react-chartjs-2": "^5.2.0",
         "react-datepicker": "^4.25.0",
